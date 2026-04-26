@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>PortaTune | Vintage Local Audio Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0f1e 0%, #0a1a1a 100%);
+            font-family: 'Courier New', 'SF Mono', monospace;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        :root {
+            --accent: #10b981;
+            --accent-dark: #047857;
+            --accent-glow: #34d399;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .player-card {
+            background: linear-gradient(145deg, #111827 0%, #030712 100%);
+            border-radius: 48px;
+            padding: 30px;
+            box-shadow: 0 30px 40px -20px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+            border: 1px solid #1f2937;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brand h1 {
+            font-size: 10px;
+            color: #6b7280;
+            letter-spacing: 3px;
+        }
+
+        .brand .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent);
+            transition: color 0.2s;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 15px;
+            background: #1f2937;
+            padding: 8px 20px;
+            border-radius: 60px;
+        }
+
+        .color-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: transform 0.2s, border 0.2s;
+        }
+
+        .color-dot:hover { transform: scale(1.1); }
+        .color-dot.active { border-color: white; box-shadow: 0 0 12px currentColor; }
+
+        .two-columns {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .left-col { flex: 1.2; min-width: 280px; }
+
+        .lcd {
+            background: #000000cc;
+            backdrop-filter: blur(4px);
+            border-radius: 32px;
+            padding: 28px;
+            margin-bottom: 30px;
+            border: 1px solid #374151;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.6), 0 6px 12px rgba(0,0,0,0.4);
+        }
+
+        .lcd-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        .lcd-header span {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--accent);
+            opacity: 0.7;
+        }
+
+        .song-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--accent-glow);
+            margin-bottom: 10px;
+            word-break: break-word;
+            text-shadow: 0 0 6px var(--accent);
+        }
+        .song-artist {
+            font-size: 11px;
+            color: var(--accent);
+            opacity: 0.7;
+            letter-spacing: 1px;
+        }
+
+        .progress-area { margin-top: 50px; }
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--accent);
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+        .progress-track {
+            background: #1e293b;
+            height: 4px;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .progress-fill {
+            background: var(--accent);
+            width: 0%;
+            height: 100%;
+            box-shadow: 0 0 6px var(--accent);
+            transition: width 0.05s linear;
+        }
+        input[type="range"] {
+            width: 100%;
+            opacity: 0;
+            height: 4px;
+            position: absolute;
+            top: 0;
+            cursor: pointer;
+        }
+
+        .transport {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .transport-btn {
+            background: #1e293b;
+            border: none;
+            font-size: 28px;
+            padding: 12px 24px;
+            border-radius: 60px;
+            cursor: pointer;
+            color: #cbd5e1;
+            box-shadow: 0 4px 0 #0f172a;
+            transition: 0.07s linear;
+        }
+        .transport-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #0f172a; }
+        .btn-play {
+            background: var(--accent) !important;
+            color: #030712 !important;
+            flex: 1;
+            font-weight: bold;
+            letter-spacing: 2px;
+            box-shadow: 0 5px 0 var(--accent-dark) !important;
+        }
+
+        .right-col { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 20px; }
+        .playlist-box {
+            background: #0f172a;
+            border-radius: 32px;
+            border: 1px solid #1f2937;
+            overflow: hidden;
+        }
+        .playlist-title {
+            background: #1e293b;
+            padding: 14px;
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: #94a3b8;
+        }
+        .playlist-songs {
+            padding: 12px;
+            max-height: 360px;
+            overflow-y: auto;
+        }
+        .song-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            margin-bottom: 6px;
+            border-radius: 20px;
+            cursor: pointer;
+            color: #cbd5e1;
+            font-size: 13px;
+            transition: all 0.15s;
+        }
+        .song-row:hover { background: #1e293b; }
+        .song-row.now-playing {
+            background: var(--accent);
+            color: #030712;
+            font-weight: bold;
+        }
+        .playing-led {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin-left: auto;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1);}
+            50% { opacity: 0.4; transform: scale(0.8);}
+        }
+
+        .import-btn {
+            background: var(--accent);
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 40px;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.1s linear;
+        }
+        .action-row { display: flex; gap: 12px; }
+        .action-btn {
+            flex: 1;
+            background: #1e293b;
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            color: #cbd5e1;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.1s linear;
+        }
+        .action-btn:active { transform: scale(0.97); }
+
+        .volume-panel {
+            background: #0f172a;
+            border-radius: 40px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-top: 12px;
+        }
+        .vol-slider {
+            flex: 1;
+            height: 4px;
+            background: #1e293b;
+            border-radius: 4px;
+            position: relative;
+        }
+        .vol-fill { width: 70%; height: 100%; background: #6b7280; border-radius: 4px; }
+        .vol-input { width: 100%; opacity: 0; position: absolute; cursor: pointer; }
+
+        .modal-tips {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000cc;
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-tips.active { display: flex; }
+        .modal-card {
+            background: #111827;
+            border-radius: 48px;
+            padding: 32px;
+            max-width: 360px;
+            width: 90%;
+            border: 1px solid var(--accent);
+        }
+        .modal-card button {
+            background: var(--accent);
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 60px;
+            font-weight: bold;
+            margin-top: 24px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 700px) {
+            .player-card { padding: 18px; }
+            .song-title { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="player-card">
+
+        <div class="header">
+            <div class="brand">
+                <h1>◀ ● ■ PORTATUNE ■ ● ▶</h1>
+                <div class="logo">PORTA<span style="font-weight:300;">TUNE</span></div>
+            </div>
+            <div class="color-palette" id="colorPalette">
+                <div class="color-dot active" data-theme="green" style="background:#10b981"></div>
+                <div class="color-dot" data-theme="purple" style="background:#8b5cf6"></div>
+                <div class="color-dot" data-theme="blue" style="background:#3b82f6"></div>
+                <div class="color-dot" data-theme="silver" style="background:#94a3b8"></div>
+                <div class="color-dot" data-theme="amber" style="background:#f59e0b"></div>
+            </div>
+        </div>
+
+        <div class="two-columns">
+            <div class="left-col">
+                <div class="lcd">
+                    <div class="lcd-header">
+                        <span>⚡ HI-FI MODE</span>
+                        <span id="trackCounter">TRACK 00/00</span>
+                    </div>
+                    <div class="song-title" id="songTitle">NO FILE</div>
+                    <div class="song-artist" id="songArtist">local library</div>
+                    <div class="progress-area">
+                        <div class="time-info">
+                            <span id="currentTime">00:00</span>
+                            <span id="totalTime">00:00</span>
+                        </div>
+                        <div class="progress-track" id="progressTrack">
+                            <div class="progress-fill" id="progressFill"></div>
+                            <input type="range" id="progressSlider" value="0" step="0.01">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="transport">
+                    <button id="prevBtn" class="transport-btn">⏮</button>
+                    <button id="playBtn" class="transport-btn btn-play">▶ PLAY</button>
+                    <button id="nextBtn" class="transport-btn">⏭</button>
+                </div>
+            </div>
+
+            <div class="right-col">
+                <div class="playlist-box">
+                    <div class="playlist-title">🎧 PLAYLIST · PORTATUNE</div>
+                    <div class="playlist-songs" id="playlistContainer">
+                        <div style="text-align:center; padding:32px; color:#475569;">🎵 No tracks<br>⬆️ import your files</div>
+                    </div>
+                </div>
+
+                <input type="file" id="fileUpload" multiple accept=".mp3,.m4a,.wav,.ogg,.mp4" style="display:none">
+                <button id="importBtn" class="import-btn">🎵 IMPORT LOCAL MUSIC</button>
+
+                <div class="action-row">
+                    <button id="tipsBtn" class="action-btn">💡 TIPS</button>
+                    <button id="donateBtn" class="action-btn">🎧⚡🧠 DONATE</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="volume-panel">
+            <span>🔊</span>
+            <div class="vol-slider" id="volSlider">
+                <div class="vol-fill" id="volFill"></div>
+                <input type="range" id="volumeCtrl" min="0" max="100" value="70" class="vol-input">
+            </div>
+            <span id="volValue">70%</span>
+        </div>
+    </div>
+</div>
+
+<audio id="audioElement"></audio>
+
+<div id="tipsModal" class="modal-tips">
+    <div class="modal-card">
+        <h3 style="color:var(--accent); margin-bottom:16px;">🎧 TIPS PORTA·TUNE</h3>
+        <ul style="color:#cbd5e1; font-size:12px; line-height:1.6;">
+            <li>🎨 <strong>Change colors</strong> → top right circles.</li>
+            <li>📂 <strong>Import multiple files</strong> at once.</li>
+            <li>📱 <strong>Add to home screen</strong> → turns into standalone app.</li>
+            <li>🔊 Files live on your device, never uploaded.</li>
+            <li>⚡ <strong>Tap the “tips” button again</strong> to close this panel.</li>
+        </ul>
+        <button id="closeModalBtn">CLOSE</button>
+    </div>
+</div>
+
+<script>
+    // ----- DOM Elements -----
+    const audio = document.getElementById('audioElement');
+    const playBtn = document.getElementById('playBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const progressSlider = document.getElementById('progressSlider');
+    const progressFill = document.getElementById('progressFill');
+    const volumeCtrl = document.getElementById('volumeCtrl');
+    const volFill = document.getElementById('volFill');
+    const volValue = document.getElementById('volValue');
+    const songTitleSpan = document.getElementById('songTitle');
+    const currentTimeSpan = document.getElementById('currentTime');
+    const totalTimeSpan = document.getElementById('totalTime');
+    const trackCounterSpan = document.getElementById('trackCounter');
+    const playlistDiv = document.getElementById('playlistContainer');
+    const fileInput = document.getElementById('fileUpload');
+    const importBtn = document.getElementById('importBtn');
+    const tipsBtn = document.getElementById('tipsBtn');
+    const donateBtn = document.getElementById('donateBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const tipsModal = document.getElementById('tipsModal');
+
+    let library = [];
+    let currentIdx = 0;
+    let isPlaying = false;
+    let currentVolume = 70;
+
+    const formatTime = (sec) => {
+        if (isNaN(sec)) return '00:00';
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    };
+
+    const updateCounter = () => {
+        if (!library.length) trackCounterSpan.innerText = `TRACK 00/00`;
+        else trackCounterSpan.innerText = `TRACK ${(currentIdx+1).toString().padStart(2,'0')}/${library.length.toString().padStart(2,'0')}`;
+    };
+
+    const refreshUI = () => {
+        if (library[currentIdx]) songTitleSpan.innerText = library[currentIdx].name;
+        else songTitleSpan.innerText = '🎵 NO FILE';
+        playBtn.innerText = isPlaying ? '⏸ PAUSE' : '▶ PLAY';
+        updateCounter();
+
+        document.querySelectorAll('.song-row').forEach((row, idx) => {
+            if (idx === currentIdx && isPlaying) {
+                row.classList.add('now-playing');
+                let led = row.querySelector('.playing-led');
+                if (!led) {
+                    led = document.createElement('span');
+                    led.className = 'playing-led';
+                    row.appendChild(led);
+                }
+            } else {
+                row.classList.remove('now-playing');
+                const led = row.querySelector('.playing-led');
+                if (led) led.remove();
+            }
+        });
+    };
+
+    const loadTrack = (index) => {
+        if (!library[index]) return;
+        const wasPlaying = isPlaying;
+        audio.src = library[index].url;
+        songTitleSpan.innerText = library[index].name;
+        audio.load();
+        if (wasPlaying) audio.play().catch(e => console.log("play blocked", e));
+        refreshUI();
+    };
+
+    const renderPlaylist = () => {
+        if (!library.length) {
+            playlistDiv.innerHTML = `<div style="text-align:center; padding:32px; color:#475569;">🎵 No tracks<br>⬆️ import your files</div>`;
+            return;
+        }
+        let html = '';
+        library.forEach((track, idx) => {
+            const activeClass = (idx === currentIdx && isPlaying) ? 'now-playing' : '';
+            html += `<div class="song-row ${activeClass}" data-index="${idx}">
+                        <span style="opacity:0.6; width:30px;">${(idx+1).toString().padStart(2,'0')}</span>
+                        <span style="flex:1;">${escapeHtml(track.name)}</span>
+                        ${ (idx === currentIdx && isPlaying) ? '<span class="playing-led"></span>' : '' }
+                    </div>`;
+        });
+        playlistDiv.innerHTML = html;
+        document.querySelectorAll('.song-row').forEach(row => {
+            const index = parseInt(row.dataset.index);
+            row.addEventListener('click', () => {
+                currentIdx = index;
+                isPlaying = true;
+                loadTrack(currentIdx);
+                audio.play().catch(e => console.log(e));
+                refreshUI();
+                renderPlaylist();
+            });
+        });
+    };
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    audio.addEventListener('timeupdate', () => {
+        if (audio.duration) {
+            const percent = (audio.currentTime / audio.duration) * 100;
+            progressSlider.value = percent;
+            progressFill.style.width = percent + '%';
+            currentTimeSpan.innerText = formatTime(audio.currentTime);
+            totalTimeSpan.innerText = formatTime(audio.duration);
+        }
+    });
+
+    progressSlider.addEventListener('input', (e) => {
+        if (audio.duration) audio.currentTime = (e.target.value / 100) * audio.duration;
+    });
+
+    volumeCtrl.addEventListener('input', (e) => {
+        currentVolume = e.target.value;
+        audio.volume = currentVolume / 100;
+        volFill.style.width = currentVolume + '%';
+        volValue.innerText = currentVolume + '%';
+    });
+
+    audio.addEventListener('ended', () => {
+        if (library.length) {
+            currentIdx = (currentIdx + 1) % library.length;
+            isPlaying = true;
+            loadTrack(currentIdx);
+            audio.play().catch(e => console.log(e));
+            renderPlaylist();
+        }
+    });
+
+    const togglePlay = () => {
+        if (!library.length) return;
+        if (isPlaying) audio.pause();
+        else audio.play().catch(e => console.log(e));
+        isPlaying = !isPlaying;
+        refreshUI();
+        renderPlaylist();
+    };
+
+    const nextTrack = () => {
+        if (!library.length) return;
+        currentIdx = (currentIdx + 1) % library.length;
+        isPlaying = true;
+        loadTrack(currentIdx);
+        audio.play().catch(e => console.log(e));
+        renderPlaylist();
+    };
+
+    const prevTrack = () => {
+        if (!library.length) return;
+        currentIdx = (currentIdx - 1 + library.length) % library.length;
+        isPlaying = true;
+        loadTrack(currentIdx);
+        audio.play().catch(e => console.log(e));
+        renderPlaylist();
+    };
+
+    playBtn.addEventListener('click', togglePlay);
+    nextBtn.addEventListener('click', nextTrack);
+    prevBtn.addEventListener('click', prevTrack);
+
+    importBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        let newEntries = [];
+        files.forEach(file => {
+            if (file.type.startsWith('audio/') || /\.(mp3|m4a|wav|ogg|mp4)$/i.test(file.name)) {
+                const url = URL.createObjectURL(file);
+                const name = file.name.replace(/\.[^/.]+$/, '');
+                if (!library.some(s => s.name === name)) newEntries.push({ name, url });
+            }
+        });
+        if (!newEntries.length) return;
+        library.push(...newEntries);
+        renderPlaylist();
+        if (library.length === newEntries.length) {
+            currentIdx = 0;
+            isPlaying = true;
+            loadTrack(0);
+            audio.play().catch(e => console.log(e));
+        }
+        fileInput.value = '';
+    });
+
+    const themes = {
+        green: { accent: '#10b981', dark: '#047857', glow: '#34d399', bgEnd: '#064e3b' },
+        purple: { accent: '#8b5cf6', dark: '#6d28d9', glow: '#a78bfa', bgEnd: '#4c1d95' },
+        blue: { accent: '#3b82f6', dark: '#1d4ed8', glow: '#60a5fa', bgEnd: '#1e3a8a' },
+        silver: { accent: '#94a3b8', dark: '#64748b', glow: '#cbd5e1', bgEnd: '#1e293b' },
+        amber: { accent: '#f59e0b', dark: '#b45309', glow: '#fbbf24', bgEnd: '#78350f' }
+    };
+
+    const applyTheme = (themeName) => {
+        const t = themes[themeName];
+        if (!t) return;
+        document.documentElement.style.setProperty('--accent', t.accent);
+        document.documentElement.style.setProperty('--accent-dark', t.dark);
+        document.documentElement.style.setProperty('--accent-glow', t.glow);
+        document.body.style.background = `linear-gradient(135deg, #0a0f1e 0%, ${t.bgEnd} 100%)`;
+        document.querySelectorAll('.color-dot').forEach(dot => {
+            if (dot.dataset.theme === themeName) dot.classList.add('active');
+            else dot.classList.remove('active');
+        });
+    };
+
+    document.querySelectorAll('.color-dot').forEach(dot => {
+        dot.addEventListener('click', () => applyTheme(dot.dataset.theme));
+    });
+
+    tipsBtn.addEventListener('click', () => tipsModal.classList.add('active'));
+    closeModalBtn.addEventListener('click', () => tipsModal.classList.remove('active'));
+    tipsModal.addEventListener('click', (e) => { if (e.target === tipsModal) tipsModal.classList.remove('active'); });
+
+    // === KO-FI INTEGRADO ===
+    donateBtn.addEventListener('click', () => {
+        window.open('https://ko-fi.com/portatune', '_blank');
+    });
+
+    audio.volume = currentVolume / 100;
+    volFill.style.width = currentVolume + '%';
+    volValue.innerText = currentVolume + '%';
+    applyTheme('green');
+    renderPlaylist();
+</script>
+</body>
+</html>
