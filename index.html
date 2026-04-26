@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>PortaTune | Vintage Local Audio Player</title>
+    
+    <!-- Favicon (sube tu archivo favicon.png a GitHub en la misma carpeta) -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    
     <style>
         * {
             margin: 0;
@@ -59,6 +63,16 @@
             font-weight: bold;
             color: var(--accent);
             transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Logo imagen (si subes logo.png, se mostrará aquí) */
+        .brand-img {
+            height: 32px;
+            width: auto;
+            display: inline-block;
         }
 
         .color-palette {
@@ -337,6 +351,7 @@
             .color-dot { width: 16px; height: 16px; }
             .transport-btn { font-size: 18px; padding: 8px 14px; }
             .loop-btn { font-size: 16px; padding: 8px 12px; }
+            .brand-img { height: 24px; }
         }
     </style>
 </head>
@@ -348,7 +363,11 @@
         <div class="header">
             <div class="brand">
                 <h1>◀ ● ■ PORTATUNE ■ ● ▶</h1>
-                <div class="logo">PORTA<span style="font-weight:300;">TUNE</span></div>
+                <div class="logo">
+                    <!-- Logo imagen (opcional: sube tu logo.png a GitHub) -->
+                    <img class="brand-img" src="logo.png" alt="PortaTune" onerror="this.style.display='none'">
+                    <span>PORTA<span style="font-weight:300;">TUNE</span></span>
+                </div>
             </div>
             <div class="color-palette" id="colorPalette">
                 <div class="color-dot active" data-theme="green" style="background:#10b981"></div>
@@ -429,6 +448,7 @@
             <li><strong>3️⃣ LOOP MODES</strong><br>🔁 Repeat all playlist. 🔂 Repeat one song. No loop = stops after each track.</li>
             <li><strong>🎨 COLORS</strong><br>Use the small circles (top right) to change the interface theme.</li>
             <li><strong>📱 ADD TO HOME SCREEN</strong><br>Share menu → "Add to Home Screen" → standalone app.</li>
+            <li><strong>🖼️ CUSTOMIZE</strong><br>Add your own logo and favicon: upload <strong>logo.png</strong> and <strong>favicon.png</strong> to the same folder.</li>
         </ul>
         <button id="closeModalBtn">CLOSE</button>
     </div>
