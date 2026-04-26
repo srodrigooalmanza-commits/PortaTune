@@ -61,7 +61,6 @@
             transition: color 0.2s;
         }
 
-        /* Paleta de colores compacta y discreta */
         .color-palette {
             display: flex;
             gap: 8px;
@@ -80,16 +79,8 @@
             transition: all 0.2s ease;
         }
 
-        .color-dot:hover {
-            transform: scale(1.15);
-            border-color: rgba(255,255,255,0.8);
-        }
-
-        .color-dot.active {
-            border-color: white;
-            box-shadow: 0 0 6px currentColor;
-            transform: scale(1.05);
-        }
+        .color-dot:hover { transform: scale(1.15); border-color: rgba(255,255,255,0.8); }
+        .color-dot.active { border-color: white; box-shadow: 0 0 6px currentColor; transform: scale(1.05); }
 
         .two-columns {
             display: flex;
@@ -98,7 +89,6 @@
         }
 
         .left-col { flex: 1.2; min-width: 280px; }
-
         .lcd {
             background: #000000cc;
             backdrop-filter: blur(4px);
@@ -108,7 +98,6 @@
             border: 1px solid #374151;
             box-shadow: inset 0 0 30px rgba(0,0,0,0.6), 0 6px 12px rgba(0,0,0,0.4);
         }
-
         .lcd-header {
             display: flex;
             justify-content: space-between;
@@ -171,14 +160,16 @@
 
         .transport {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
         }
         .transport-btn {
             background: #1e293b;
             border: none;
-            font-size: 24px;
-            padding: 10px 20px;
+            font-size: 22px;
+            padding: 10px 18px;
             border-radius: 50px;
             cursor: pointer;
             color: #cbd5e1;
@@ -189,11 +180,24 @@
         .btn-play {
             background: var(--accent) !important;
             color: #030712 !important;
-            flex: 1;
             font-weight: bold;
             letter-spacing: 2px;
             font-size: 16px;
             box-shadow: 0 5px 0 var(--accent-dark) !important;
+        }
+        .loop-btn {
+            background: #1e293b;
+            border: none;
+            font-size: 18px;
+            padding: 10px 14px;
+            border-radius: 50px;
+            cursor: pointer;
+            color: #6b7280;
+            transition: 0.1s linear;
+        }
+        .loop-btn.active {
+            color: var(--accent);
+            box-shadow: 0 0 6px var(--accent);
         }
 
         .right-col { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 18px; }
@@ -331,6 +335,8 @@
             .player-card { padding: 18px; }
             .song-title { font-size: 20px; }
             .color-dot { width: 16px; height: 16px; }
+            .transport-btn { font-size: 18px; padding: 8px 14px; }
+            .loop-btn { font-size: 16px; padding: 8px 12px; }
         }
     </style>
 </head>
@@ -378,6 +384,8 @@
                     <button id="prevBtn" class="transport-btn">⏮</button>
                     <button id="playBtn" class="transport-btn btn-play">▶ PLAY</button>
                     <button id="nextBtn" class="transport-btn">⏭</button>
+                    <button id="repeatAllBtn" class="loop-btn" title="Repeat all">🔁</button>
+                    <button id="repeatOneBtn" class="loop-btn" title="Repeat one">🔂</button>
                 </div>
             </div>
 
@@ -418,17 +426,15 @@
         <ul style="color:#cbd5e1; font-size:12px; line-height:1.6; padding-left:18px;">
             <li><strong>1️⃣ SAVE FILES FIRST</strong><br>Download audio to your device. From WhatsApp: tap & hold → "Save to Files".</li>
             <li><strong>2️⃣ IMPORT</strong><br>Click "IMPORT LOCAL MUSIC" and select your files (multiple at once).</li>
-            <li><strong>3️⃣ ORGANIZE</strong><br>Create a "PortaTune" folder to keep your tracks separate from Downloads.</li>
+            <li><strong>3️⃣ LOOP MODES</strong><br>🔁 Repeat all playlist. 🔂 Repeat one song. No loop = stops after each track.</li>
             <li><strong>🎨 COLORS</strong><br>Use the small circles (top right) to change the interface theme.</li>
             <li><strong>📱 ADD TO HOME SCREEN</strong><br>Share menu → "Add to Home Screen" → standalone app.</li>
-            <li><strong>🔊 100% LOCAL</strong><br>Your files never leave your device. No uploads, no tracking.</li>
         </ul>
         <button id="closeModalBtn">CLOSE</button>
     </div>
 </div>
 
 <script>
-    // ----- DOM Elements -----
     const audio = document.getElementById('audioElement');
     const playBtn = document.getElementById('playBtn');
     const prevBtn = document.getElementById('prevBtn');
@@ -449,11 +455,15 @@
     const donateBtn = document.getElementById('donateBtn');
     const closeModalBtn = document.getElementById('closeModalBtn');
     const tipsModal = document.getElementById('tipsModal');
+    const repeatAllBtn = document.getElementById('repeatAllBtn');
+    const repeatOneBtn = document.getElementById('repeatOneBtn');
 
     let library = [];
     let currentIdx = 0;
     let isPlaying = false;
     let currentVolume = 70;
+    let repeatAll = false;
+    let repeatOne = false;
 
     const formatTime = (sec) => {
         if (isNaN(sec)) return '00:00';
@@ -488,6 +498,11 @@
                 if (led) led.remove();
             }
         });
+
+        if (repeatAll) repeatAllBtn.classList.add('active');
+        else repeatAllBtn.classList.remove('active');
+        if (repeatOne) repeatOneBtn.classList.add('active');
+        else repeatOneBtn.classList.remove('active');
     };
 
     const loadTrack = (index) => {
@@ -560,11 +575,18 @@
     });
 
     audio.addEventListener('ended', () => {
-        if (library.length) {
-            currentIdx = (currentIdx + 1) % library.length;
-            isPlaying = true;
+        if (library.length === 0) return;
+        if (repeatOne) {
             loadTrack(currentIdx);
             audio.play().catch(e => console.log(e));
+        } else if (repeatAll) {
+            currentIdx = (currentIdx + 1) % library.length;
+            loadTrack(currentIdx);
+            audio.play().catch(e => console.log(e));
+            renderPlaylist();
+        } else {
+            isPlaying = false;
+            refreshUI();
             renderPlaylist();
         }
     });
@@ -580,7 +602,9 @@
 
     const nextTrack = () => {
         if (!library.length) return;
-        currentIdx = (currentIdx + 1) % library.length;
+        if (currentIdx + 1 < library.length) currentIdx++;
+        else if (repeatAll) currentIdx = 0;
+        else return;
         isPlaying = true;
         loadTrack(currentIdx);
         audio.play().catch(e => console.log(e));
@@ -589,7 +613,9 @@
 
     const prevTrack = () => {
         if (!library.length) return;
-        currentIdx = (currentIdx - 1 + library.length) % library.length;
+        if (currentIdx - 1 >= 0) currentIdx--;
+        else if (repeatAll) currentIdx = library.length - 1;
+        else return;
         isPlaying = true;
         loadTrack(currentIdx);
         audio.play().catch(e => console.log(e));
@@ -599,6 +625,18 @@
     playBtn.addEventListener('click', togglePlay);
     nextBtn.addEventListener('click', nextTrack);
     prevBtn.addEventListener('click', prevTrack);
+
+    repeatAllBtn.addEventListener('click', () => {
+        if (repeatOne) repeatOne = false;
+        repeatAll = !repeatAll;
+        refreshUI();
+    });
+
+    repeatOneBtn.addEventListener('click', () => {
+        if (repeatAll) repeatAll = false;
+        repeatOne = !repeatOne;
+        refreshUI();
+    });
 
     importBtn.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', (e) => {
