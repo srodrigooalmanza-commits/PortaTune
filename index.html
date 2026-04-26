@@ -33,7 +33,7 @@
         .player-card {
             background: linear-gradient(145deg, #111827 0%, #030712 100%);
             border-radius: 48px;
-            padding: 30px;
+            padding: 28px;
             box-shadow: 0 30px 40px -20px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
             border: 1px solid #1f2937;
         }
@@ -41,44 +41,55 @@
         .header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
+            align-items: flex-end;
+            margin-bottom: 30px;
             flex-wrap: wrap;
             gap: 15px;
         }
 
         .brand h1 {
-            font-size: 10px;
+            font-size: 9px;
             color: #6b7280;
             letter-spacing: 3px;
+            margin-bottom: 4px;
         }
 
         .brand .logo {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
             color: var(--accent);
             transition: color 0.2s;
         }
 
+        /* Paleta de colores compacta y discreta */
         .color-palette {
             display: flex;
-            gap: 15px;
-            background: #1f2937;
-            padding: 8px 20px;
-            border-radius: 60px;
+            gap: 8px;
+            background: rgba(0,0,0,0.3);
+            padding: 6px 12px;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
         }
 
         .color-dot {
-            width: 28px;
-            height: 28px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             cursor: pointer;
-            border: 2px solid rgba(255,255,255,0.3);
-            transition: transform 0.2s, border 0.2s;
+            border: 1.5px solid rgba(255,255,255,0.2);
+            transition: all 0.2s ease;
         }
 
-        .color-dot:hover { transform: scale(1.1); }
-        .color-dot.active { border-color: white; box-shadow: 0 0 12px currentColor; }
+        .color-dot:hover {
+            transform: scale(1.15);
+            border-color: rgba(255,255,255,0.8);
+        }
+
+        .color-dot.active {
+            border-color: white;
+            box-shadow: 0 0 6px currentColor;
+            transform: scale(1.05);
+        }
 
         .two-columns {
             display: flex;
@@ -91,9 +102,9 @@
         .lcd {
             background: #000000cc;
             backdrop-filter: blur(4px);
-            border-radius: 32px;
-            padding: 28px;
-            margin-bottom: 30px;
+            border-radius: 28px;
+            padding: 24px;
+            margin-bottom: 28px;
             border: 1px solid #374151;
             box-shadow: inset 0 0 30px rgba(0,0,0,0.6), 0 6px 12px rgba(0,0,0,0.4);
         }
@@ -101,42 +112,42 @@
         .lcd-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
         .lcd-header span {
-            font-size: 10px;
+            font-size: 9px;
             letter-spacing: 2px;
             color: var(--accent);
-            opacity: 0.7;
+            opacity: 0.6;
         }
 
         .song-title {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
             color: var(--accent-glow);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             word-break: break-word;
             text-shadow: 0 0 6px var(--accent);
         }
         .song-artist {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--accent);
-            opacity: 0.7;
+            opacity: 0.6;
             letter-spacing: 1px;
         }
 
-        .progress-area { margin-top: 50px; }
+        .progress-area { margin-top: 40px; }
         .time-info {
             display: flex;
             justify-content: space-between;
-            font-size: 10px;
+            font-size: 9px;
             color: var(--accent);
-            opacity: 0.7;
+            opacity: 0.6;
             margin-bottom: 8px;
         }
         .progress-track {
             background: #1e293b;
-            height: 4px;
+            height: 3px;
             border-radius: 4px;
             position: relative;
             overflow: hidden;
@@ -152,7 +163,7 @@
         input[type="range"] {
             width: 100%;
             opacity: 0;
-            height: 4px;
+            height: 3px;
             position: absolute;
             top: 0;
             cursor: pointer;
@@ -160,15 +171,15 @@
 
         .transport {
             display: flex;
-            gap: 20px;
+            gap: 16px;
             justify-content: center;
         }
         .transport-btn {
             background: #1e293b;
             border: none;
-            font-size: 28px;
-            padding: 12px 24px;
-            border-radius: 60px;
+            font-size: 24px;
+            padding: 10px 20px;
+            border-radius: 50px;
             cursor: pointer;
             color: #cbd5e1;
             box-shadow: 0 4px 0 #0f172a;
@@ -181,39 +192,40 @@
             flex: 1;
             font-weight: bold;
             letter-spacing: 2px;
+            font-size: 16px;
             box-shadow: 0 5px 0 var(--accent-dark) !important;
         }
 
-        .right-col { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 20px; }
+        .right-col { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 18px; }
         .playlist-box {
             background: #0f172a;
-            border-radius: 32px;
+            border-radius: 28px;
             border: 1px solid #1f2937;
             overflow: hidden;
         }
         .playlist-title {
             background: #1e293b;
-            padding: 14px;
+            padding: 12px;
             text-align: center;
-            font-size: 11px;
-            letter-spacing: 3px;
+            font-size: 10px;
+            letter-spacing: 2px;
             color: #94a3b8;
         }
         .playlist-songs {
-            padding: 12px;
-            max-height: 360px;
+            padding: 10px;
+            max-height: 320px;
             overflow-y: auto;
         }
         .song-row {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 10px;
-            margin-bottom: 6px;
-            border-radius: 20px;
+            gap: 10px;
+            padding: 8px 10px;
+            margin-bottom: 5px;
+            border-radius: 16px;
             cursor: pointer;
             color: #cbd5e1;
-            font-size: 13px;
+            font-size: 12px;
             transition: all 0.15s;
         }
         .song-row:hover { background: #1e293b; }
@@ -223,8 +235,8 @@
             font-weight: bold;
         }
         .playing-led {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background: var(--accent);
             border-radius: 50%;
             margin-left: auto;
@@ -238,26 +250,26 @@
         .import-btn {
             background: var(--accent);
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             border: none;
-            border-radius: 40px;
+            border-radius: 36px;
             font-weight: bold;
             font-family: monospace;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
             transition: 0.1s linear;
         }
-        .action-row { display: flex; gap: 12px; }
+        .action-row { display: flex; gap: 10px; }
         .action-btn {
             flex: 1;
             background: #1e293b;
             border: none;
-            padding: 12px;
-            border-radius: 40px;
+            padding: 10px;
+            border-radius: 36px;
             color: #cbd5e1;
             font-weight: bold;
             font-family: monospace;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             transition: 0.1s linear;
         }
@@ -265,16 +277,16 @@
 
         .volume-panel {
             background: #0f172a;
-            border-radius: 40px;
-            padding: 12px 20px;
+            border-radius: 36px;
+            padding: 10px 18px;
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 14px;
             margin-top: 12px;
         }
         .vol-slider {
             flex: 1;
-            height: 4px;
+            height: 3px;
             background: #1e293b;
             border-radius: 4px;
             position: relative;
@@ -298,26 +310,27 @@
         .modal-tips.active { display: flex; }
         .modal-card {
             background: #111827;
-            border-radius: 48px;
-            padding: 32px;
-            max-width: 360px;
+            border-radius: 40px;
+            padding: 28px;
+            max-width: 340px;
             width: 90%;
             border: 1px solid var(--accent);
         }
         .modal-card button {
             background: var(--accent);
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             border: none;
-            border-radius: 60px;
+            border-radius: 50px;
             font-weight: bold;
-            margin-top: 24px;
+            margin-top: 20px;
             cursor: pointer;
         }
 
         @media (max-width: 700px) {
             .player-card { padding: 18px; }
-            .song-title { font-size: 22px; }
+            .song-title { font-size: 20px; }
+            .color-dot { width: 16px; height: 16px; }
         }
     </style>
 </head>
@@ -372,7 +385,7 @@
                 <div class="playlist-box">
                     <div class="playlist-title">🎧 PLAYLIST · PORTATUNE</div>
                     <div class="playlist-songs" id="playlistContainer">
-                        <div style="text-align:center; padding:32px; color:#475569;">🎵 No tracks<br>⬆️ import your files</div>
+                        <div style="text-align:center; padding:30px; color:#475569;">🎵 No tracks<br>⬆️ import your files</div>
                     </div>
                 </div>
 
@@ -380,7 +393,7 @@
                 <button id="importBtn" class="import-btn">🎵 IMPORT LOCAL MUSIC</button>
 
                 <div class="action-row">
-                    <button id="tipsBtn" class="action-btn">📖 HOW TO</button>
+                    <button id="tipsBtn" class="action-btn">📖 GUIDE</button>
                     <button id="donateBtn" class="action-btn">🎧⚡🧠 DONATE</button>
                 </div>
             </div>
@@ -401,13 +414,13 @@
 
 <div id="tipsModal" class="modal-tips">
     <div class="modal-card">
-        <h3 style="color:var(--accent); margin-bottom:16px;">🎧 HOW TO · PORTATUNE</h3>
-        <ul style="color:#cbd5e1; font-size:12px; line-height:1.6;">
-            <li><strong>1️⃣ DOWNLOAD YOUR FILES FIRST</strong><br>Save audio files to your device (Downloads, Music, or any folder). From WhatsApp: tap & hold → "Save to Files".</li>
-            <li><strong>2️⃣ IMPORT</strong><br>Click "IMPORT LOCAL MUSIC" and select your files. You can select multiple at once.</li>
-            <li><strong>3️⃣ ORGANIZE</strong><br>Keep your audio files in any folder you like. We recommend creating a "PortaTune" folder to keep things clean.</li>
-            <li><strong>🎨 CHANGE COLORS</strong><br>Use the colored circles (top right) to switch themes.</li>
-            <li><strong>📱 ADD TO HOME SCREEN</strong><br>On mobile: Share menu → "Add to Home Screen" → turns into standalone app.</li>
+        <h3 style="color:var(--accent); margin-bottom:16px;">🎧 GUIDE · PORTATUNE</h3>
+        <ul style="color:#cbd5e1; font-size:12px; line-height:1.6; padding-left:18px;">
+            <li><strong>1️⃣ SAVE FILES FIRST</strong><br>Download audio to your device. From WhatsApp: tap & hold → "Save to Files".</li>
+            <li><strong>2️⃣ IMPORT</strong><br>Click "IMPORT LOCAL MUSIC" and select your files (multiple at once).</li>
+            <li><strong>3️⃣ ORGANIZE</strong><br>Create a "PortaTune" folder to keep your tracks separate from Downloads.</li>
+            <li><strong>🎨 COLORS</strong><br>Use the small circles (top right) to change the interface theme.</li>
+            <li><strong>📱 ADD TO HOME SCREEN</strong><br>Share menu → "Add to Home Screen" → standalone app.</li>
             <li><strong>🔊 100% LOCAL</strong><br>Your files never leave your device. No uploads, no tracking.</li>
         </ul>
         <button id="closeModalBtn">CLOSE</button>
@@ -489,7 +502,7 @@
 
     const renderPlaylist = () => {
         if (!library.length) {
-            playlistDiv.innerHTML = `<div style="text-align:center; padding:32px; color:#475569;">🎵 No tracks<br>⬆️ import your files</div>`;
+            playlistDiv.innerHTML = `<div style="text-align:center; padding:30px; color:#475569;">🎵 No tracks<br>⬆️ import your files</div>`;
             return;
         }
         let html = '';
