@@ -380,7 +380,7 @@
                 <button id="importBtn" class="import-btn">🎵 IMPORT LOCAL MUSIC</button>
 
                 <div class="action-row">
-                    <button id="tipsBtn" class="action-btn">💡 TIPS</button>
+                    <button id="tipsBtn" class="action-btn">📖 HOW TO</button>
                     <button id="donateBtn" class="action-btn">🎧⚡🧠 DONATE</button>
                 </div>
             </div>
@@ -401,13 +401,14 @@
 
 <div id="tipsModal" class="modal-tips">
     <div class="modal-card">
-        <h3 style="color:var(--accent); margin-bottom:16px;">🎧 TIPS PORTA·TUNE</h3>
+        <h3 style="color:var(--accent); margin-bottom:16px;">🎧 HOW TO · PORTATUNE</h3>
         <ul style="color:#cbd5e1; font-size:12px; line-height:1.6;">
-            <li>🎨 <strong>Change colors</strong> → top right circles.</li>
-            <li>📂 <strong>Import multiple files</strong> at once.</li>
-            <li>📱 <strong>Add to home screen</strong> → turns into standalone app.</li>
-            <li>🔊 Files live on your device, never uploaded.</li>
-            <li>⚡ <strong>Tap the “tips” button again</strong> to close this panel.</li>
+            <li><strong>1️⃣ DOWNLOAD YOUR FILES FIRST</strong><br>Save audio files to your device (Downloads, Music, or any folder). From WhatsApp: tap & hold → "Save to Files".</li>
+            <li><strong>2️⃣ IMPORT</strong><br>Click "IMPORT LOCAL MUSIC" and select your files. You can select multiple at once.</li>
+            <li><strong>3️⃣ ORGANIZE</strong><br>Keep your audio files in any folder you like. We recommend creating a "PortaTune" folder to keep things clean.</li>
+            <li><strong>🎨 CHANGE COLORS</strong><br>Use the colored circles (top right) to switch themes.</li>
+            <li><strong>📱 ADD TO HOME SCREEN</strong><br>On mobile: Share menu → "Add to Home Screen" → turns into standalone app.</li>
+            <li><strong>🔊 100% LOCAL</strong><br>Your files never leave your device. No uploads, no tracking.</li>
         </ul>
         <button id="closeModalBtn">CLOSE</button>
     </div>
@@ -638,7 +639,6 @@
     closeModalBtn.addEventListener('click', () => tipsModal.classList.remove('active'));
     tipsModal.addEventListener('click', (e) => { if (e.target === tipsModal) tipsModal.classList.remove('active'); });
 
-    // === KO-FI INTEGRADO ===
     donateBtn.addEventListener('click', () => {
         window.open('https://ko-fi.com/portatune', '_blank');
     });
