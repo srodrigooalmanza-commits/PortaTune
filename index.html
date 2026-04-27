@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>PortaTune | Vintage Local Audio Player</title>
     
-    <!-- Favicon - Asegúrate que el archivo se llame EXACTAMENTE favicon.png -->
-    <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="shortcut icon" href="favicon.png">
+    <!-- Favicon - Ruta absoluta para GitHub Pages -->
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.png">
     
     <style>
         * {
@@ -74,11 +74,6 @@
             height: 32px;
             width: auto;
             display: inline-block;
-        }
-
-        /* Respaldo por si no carga la imagen */
-        .brand-img.error {
-            display: none;
         }
 
         .brand-text {
@@ -362,6 +357,20 @@
             cursor: pointer;
         }
 
+        /* Mensaje de depuración (solo visible si hay error) */
+        .debug-message {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: #ff6b6b;
+            font-size: 10px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            z-index: 9999;
+        }
+
         @media (max-width: 700px) {
             .player-card { padding: 18px; }
             .song-title { font-size: 20px; }
@@ -381,8 +390,8 @@
         <div class="header">
             <div class="brand">
                 <h1>◀ ● ■ PORTATUNE ■ ● ▶</h1>
-                <div class="logo-container">
-                    <img class="brand-img" id="logoImg" src="logo.png" alt="PortaTune" onerror="this.style.display='none'">
+                <div class="logo-container" id="logoContainer">
+                    <img class="brand-img" id="logoImg" src="/logo.png" alt="PortaTune" onerror="this.handleLogoError()">
                     <div class="brand-text">PORTA<span>TUNE</span></div>
                 </div>
             </div>
@@ -471,12 +480,40 @@
 </div>
 
 <script>
-    // Verificar si el logo se cargó correctamente
+    // Verificación de logo y favicon
     const logoImg = document.getElementById('logoImg');
+    
+    // Función para manejar error de carga del logo
+    window.handleLogoError = function() {
+        console.log("Logo no encontrado en /logo.png");
+        const debugDiv = document.createElement('div');
+        debugDiv.className = 'debug-message';
+        debugDiv.innerHTML = '⚠️ Logo no encontrado. Sube logo.png a GitHub.';
+        document.body.appendChild(debugDiv);
+        setTimeout(() => { debugDiv.style.display = 'none'; }, 5000);
+        if(logoImg) logoImg.style.display = 'none';
+    };
+    
     if (logoImg) {
-        logoImg.onerror = function() {
-            this.style.display = 'none';
+        logoImg.onerror = window.handleLogoError;
+        // Verificar también si la imagen se cargó bien
+        logoImg.onload = function() {
+            console.log("Logo cargado correctamente desde /logo.png");
         };
+    }
+    
+    // Verificar favicon (solo para depuración en consola)
+    const faviconLink = document.querySelector('link[rel="icon"]');
+    if (faviconLink) {
+        fetch(faviconLink.href).then(response => {
+            if (response.ok) {
+                console.log("✅ Favicon encontrado en:", faviconLink.href);
+            } else {
+                console.log("❌ Favicon NO encontrado en:", faviconLink.href);
+            }
+        }).catch(() => {
+            console.log("❌ Error al verificar favicon");
+        });
     }
 
     const audio = document.getElementById('audioElement');
