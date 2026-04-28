@@ -89,7 +89,6 @@
         .progress-fill { background: var(--accent); width: 0%; height: 100%; box-shadow: 0 0 6px var(--accent); transition: width 0.05s linear; }
         input[type="range"] { width: 100%; opacity: 0; height: 3px; position: absolute; top: 0; cursor: pointer; }
 
-        /* Botones de herramientas */
         .tool-buttons {
             display: flex;
             gap: 12px;
@@ -361,12 +360,32 @@
             height: 120px;
             margin-bottom: 20px;
         }
+        .mandala-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
         .mandala-canvas {
             width: 100%;
             height: 300px;
-            margin-bottom: 20px;
             background: #00000022;
             border-radius: 50%;
+        }
+        .fullscreen-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            border-radius: 30px;
+            padding: 6px 12px;
+            color: white;
+            font-size: 12px;
+            font-family: monospace;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+        }
+        .fullscreen-btn:hover {
+            background: rgba(0,0,0,0.8);
         }
 
         @media (max-width: 700px) {
@@ -380,6 +399,7 @@
             .song-actions button { width: 32px; height: 32px; font-size: 16px; }
             .song-name { font-size: 11px; }
             .tool-btn { font-size: 11px; padding: 8px; }
+            .mandala-canvas { height: 250px; }
         }
     </style>
 </head>
@@ -458,7 +478,7 @@
 
 <audio id="audioElement"></audio>
 
-<!-- MODAL EQ (solo presets, sin sliders individuales) -->
+<!-- MODAL EQ -->
 <div id="eqModal" class="modal-overlay">
     <div class="modal-card">
         <div class="modal-header">
@@ -480,14 +500,17 @@
     </div>
 </div>
 
-<!-- MODAL MANDALA (analizador de frecuencias visual) -->
+<!-- MODAL MANDALA con botón de pantalla completa -->
 <div id="mandalaModal" class="modal-overlay">
     <div class="modal-card">
         <div class="modal-header">
             <h3>🌀 VISUALIZADOR MANDALA</h3>
             <button class="close-modal close-mandala">✕</button>
         </div>
-        <canvas id="mandalaCanvas" class="mandala-canvas" width="400" height="400"></canvas>
+        <div class="mandala-container" id="mandalaContainer">
+            <canvas id="mandalaCanvas" class="mandala-canvas" width="400" height="400"></canvas>
+            <button id="fullscreenBtn" class="fullscreen-btn">⛶ Pantalla completa</button>
+        </div>
         <div style="text-align:center; margin-top: 8px; font-size: 10px; color: #6b7280;">se mueve con la música</div>
     </div>
 </div>
@@ -500,7 +523,7 @@
             <li><strong>2️⃣ IMPORT</strong><br>Click "IMPORT LOCAL MUSIC".</li>
             <li><strong>3️⃣ LOOP MODES</strong><br>🔁 Repeat all. 🔂 Repeat one. No loop = stops after each track.</li>
             <li><strong>🎛️ EQ</strong><br>Open EQ modal to choose presets (Rock, Pop, Voice...).</li>
-            <li><strong>🌀 VISUALIZER</strong><br>Open Mandala, it dances with the music.</li>
+            <li><strong>🌀 VISUALIZER</strong><br>Open Mandala, it dances with the music. Use fullscreen button.</li>
             <li><strong>🎨 COLORS</strong><br>Use top‑right circles to change theme.</li>
             <li><strong>📱 ADD TO HOME SCREEN</strong><br>Share menu → "Add to Home Screen".</li>
             <li><strong>⌨️ KEYBOARD</strong><br>← → between buttons. ↑ ↓ playlist. Enter to play.</li>
@@ -544,6 +567,8 @@
     const resetEqBtn = document.getElementById('resetEqBtn');
     const spectrumCanvas = document.getElementById('spectrumCanvas');
     const mandalaCanvas = document.getElementById('mandalaCanvas');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const mandalaContainer = document.getElementById('mandalaContainer');
     const ctxSpectrum = spectrumCanvas.getContext('2d');
     const ctxMandala = mandalaCanvas.getContext('2d');
 
@@ -633,7 +658,6 @@
         applyEqPreset('flat');
     }
 
-    // Inicializar por si el usuario abre el modal sin haber iniciado EQ
     function ensureEqStarted() {
         if (!eqInitialized && isPlaying) {
             initEqualizer();
@@ -641,15 +665,20 @@
         }
     }
 
-    // ========== Mandala animado (analizador frecuencias) ==========
+    // ========== Mandala con pantalla completa ==========
+    function resizeMandalaCanvas() {
+        const container = mandalaContainer;
+        const w = container.clientWidth;
+        const h = 300;
+        mandalaCanvas.width = w;
+        mandalaCanvas.height = h;
+    }
+
     function initMandala() {
         if (!audioContext) return;
         if (!analyser) {
             analyser = audioContext.createAnalyser();
             analyser.fftSize = 256;
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            // desconectar EQ actual y conectar analyser
             if (filters.length) {
                 filters[filters.length-1].disconnect();
                 filters[filters.length-1].connect(analyser);
@@ -663,17 +692,13 @@
         } else {
             startMandalaAnimation(analyser);
         }
+        resizeMandalaCanvas();
     }
 
     function startMandalaAnimation(analyserNode) {
         if (mandalaAnimationId) cancelAnimationFrame(mandalaAnimationId);
         const bufferLength = analyserNode.frequencyBinCount;
         const dataArray = new Uint8Array(bufferLength);
-        const w = mandalaCanvas.clientWidth;
-        const h = mandalaCanvas.clientHeight;
-        mandalaCanvas.width = w;
-        mandalaCanvas.height = h;
-        const centerX = w/2, centerY = h/2;
         function draw() {
             if (!mandalaModal.classList.contains('active')) {
                 if (mandalaAnimationId) cancelAnimationFrame(mandalaAnimationId);
@@ -683,6 +708,9 @@
             analyserNode.getByteFrequencyData(dataArray);
             const avg = dataArray.reduce((a,b)=>a+b,0)/bufferLength;
             const intensity = Math.min(1, avg / 128);
+            const w = mandalaCanvas.width;
+            const h = mandalaCanvas.height;
+            const centerX = w/2, centerY = h/2;
             const radiusBase = Math.min(w,h)/3;
             const radius = radiusBase + intensity * radiusBase*0.6;
             ctxMandala.clearRect(0, 0, w, h);
@@ -715,7 +743,6 @@
             mandalaAnimationId = null;
         }
         if (analyser) {
-            // reconectar EQ normal después de cerrar
             if (filters.length && audioContext) {
                 filters[filters.length-1].disconnect();
                 filters[filters.length-1].connect(audioContext.destination);
@@ -725,6 +752,42 @@
             }
         }
     }
+
+    // Pantalla completa para el canvas mandala
+    function enterFullscreen(element) {
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) { /* Safari */
+            element.webkitRequestFullscreen();
+        }
+    }
+
+    fullscreenBtn.addEventListener('click', () => {
+        enterFullscreen(mandalaContainer);
+    });
+
+    // Ajustar tamaño del canvas al entrar/salir de fullscreen
+    document.addEventListener('fullscreenchange', () => {
+        if (document.fullscreenElement === mandalaContainer) {
+            // adaptar tamaño del canvas al contenedor
+            const w = mandalaContainer.clientWidth;
+            const h = mandalaContainer.clientHeight;
+            mandalaCanvas.width = w;
+            mandalaCanvas.height = h;
+        } else {
+            resizeMandalaCanvas();
+        }
+    });
+    document.addEventListener('webkitfullscreenchange', () => {
+        if (document.webkitFullscreenElement === mandalaContainer) {
+            const w = mandalaContainer.clientWidth;
+            const h = mandalaContainer.clientHeight;
+            mandalaCanvas.width = w;
+            mandalaCanvas.height = h;
+        } else {
+            resizeMandalaCanvas();
+        }
+    });
 
     // ========== Reproductor básico ==========
     function formatTime(sec) { if(isNaN(sec)) return '00:00'; const m=Math.floor(sec/60); const s=Math.floor(sec%60); return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
@@ -826,14 +889,13 @@
     importBtn.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', (e) => { const files=Array.from(e.target.files); let newEntries=[]; files.forEach(f=>{ if(f.type.startsWith('audio/') || /\.(mp3|m4a|wav|ogg|mp4)$/i.test(f.name)){ const url=URL.createObjectURL(f); const name=f.name.replace(/\.[^/.]+$/,''); if(!library.some(s=>s.name===name)) newEntries.push({name,url}); } }); if(!newEntries.length) return; library.push(...newEntries); renderPlaylist(); if(library.length===newEntries.length){ currentIdx=0; isPlaying=true; loadTrack(0); audio.play().catch(e=>console.log(e)); ensureEqStarted(); } fileInput.value=''; });
 
-    // Temas
     const themes = { green:{accent:'#10b981',dark:'#047857',glow:'#34d399',bgEnd:'#064e3b'}, purple:{accent:'#8b5cf6',dark:'#6d28d9',glow:'#a78bfa',bgEnd:'#4c1d95'}, blue:{accent:'#3b82f6',dark:'#1d4ed8',glow:'#60a5fa',bgEnd:'#1e3a8a'}, silver:{accent:'#94a3b8',dark:'#64748b',glow:'#cbd5e1',bgEnd:'#1e293b'}, amber:{accent:'#f59e0b',dark:'#b45309',glow:'#fbbf24',bgEnd:'#78350f'} };
     const applyTheme = (themeName) => { const t=themes[themeName]; if(!t) return; document.documentElement.style.setProperty('--accent', t.accent); document.documentElement.style.setProperty('--accent-dark', t.dark); document.documentElement.style.setProperty('--accent-glow', t.glow); document.body.style.background = `linear-gradient(135deg, #0a0f1e 0%, ${t.bgEnd} 100%)`; document.querySelectorAll('.color-dot').forEach(dot=>{ if(dot.dataset.theme===themeName) dot.classList.add('active'); else dot.classList.remove('active'); }); };
     document.querySelectorAll('.color-dot').forEach(dot=>{ dot.addEventListener('click',()=>applyTheme(dot.dataset.theme)); });
 
     // MODALES
     function openModal(modal) { modal.classList.add('active'); }
-    function closeModal(modal) { modal.classList.remove('active'); if(modal === mandalaModal) stopMandala(); }
+    function closeModal(modal) { modal.classList.remove('active'); if(modal === mandalaModal) { stopMandala(); } }
     eqLauncherBtn.addEventListener('click', () => { openModal(eqModal); drawSpectrumFromGains(filters.length ? filters.map(f=>f.gain.value) : [0,0,0,0,0]); });
     mandalaLauncherBtn.addEventListener('click', () => { openModal(mandalaModal); if(audioContext && isPlaying) { initMandala(); } else { alert("Reproduce música primero para que el visualizador se mueva."); closeModal(mandalaModal); } });
     closeEqBtn.addEventListener('click', () => closeModal(eqModal));
@@ -855,6 +917,8 @@
     renderPlaylist();
     refreshUI();
     drawSpectrumFromGains([0,0,0,0,0]);
+    resizeMandalaCanvas();
+    window.addEventListener('resize', () => { resizeMandalaCanvas(); if(mandalaModal.classList.contains('active')) initMandala(); });
 </script>
 </body>
 </html>
