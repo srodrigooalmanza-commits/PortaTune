@@ -119,7 +119,7 @@
             backdrop-filter: blur(4px);
             border-radius: 28px;
             padding: 24px;
-            margin-bottom: 28px;
+            margin-bottom: 20px;
             border: 1px solid #374151;
             box-shadow: inset 0 0 30px rgba(0,0,0,0.6), 0 6px 12px rgba(0,0,0,0.4);
         }
@@ -183,12 +183,106 @@
             cursor: pointer;
         }
 
+        /* Equalizador */
+        .eq-section {
+            background: #0f172a;
+            border-radius: 24px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #334155;
+        }
+        .eq-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .eq-toggle {
+            background: var(--accent);
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            color: #030712;
+            font-family: monospace;
+            transition: 0.1s;
+            box-shadow: 0 0 8px var(--accent);
+        }
+        .eq-toggle:hover {
+            transform: scale(1.02);
+        }
+        .eq-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        .preset-btn {
+            background: #1e293b;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-family: monospace;
+            cursor: pointer;
+            color: #cbd5e1;
+            transition: 0.1s;
+        }
+        .preset-btn:hover {
+            background: #334155;
+        }
+        .eq-controls {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .eq-band {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .eq-band label {
+            width: 50px;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+        .eq-band input {
+            flex: 1;
+            height: 4px;
+            -webkit-appearance: none;
+            background: #334155;
+            border-radius: 4px;
+        }
+        .eq-band input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .eq-value {
+            width: 35px;
+            font-size: 10px;
+            text-align: right;
+            color: #cbd5e1;
+        }
+        .eq-hidden {
+            display: none;
+        }
+
         .transport {
             display: flex;
             gap: 12px;
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
+            margin-bottom: 20px;
         }
         .transport-btn {
             background: #1e293b;
@@ -421,6 +515,7 @@
             .brand-text { font-size: 18px; }
             .song-actions button { width: 32px; height: 32px; font-size: 16px; }
             .song-name { font-size: 11px; }
+            .eq-band label { width: 45px; font-size: 9px; }
         }
     </style>
 </head>
@@ -428,7 +523,6 @@
 
 <div class="container">
     <div class="player-card">
-
         <div class="header">
             <div class="brand">
                 <h1>◀ ● ■ PORTATUNE ■ ● ▶</h1>
@@ -449,21 +543,39 @@
         <div class="two-columns">
             <div class="left-col">
                 <div class="lcd">
-                    <div class="lcd-header">
-                        <span>⚡ HI-FI MODE</span>
-                        <span id="trackCounter">TRACK 00/00</span>
-                    </div>
+                    <div class="lcd-header"><span>⚡ HI-FI MODE</span><span id="trackCounter">TRACK 00/00</span></div>
                     <div class="song-title" id="songTitle">NO FILE</div>
                     <div class="song-artist" id="songArtist">local library</div>
                     <div class="progress-area">
-                        <div class="time-info">
-                            <span id="currentTime">00:00</span>
-                            <span id="totalTime">00:00</span>
-                        </div>
+                        <div class="time-info"><span id="currentTime">00:00</span><span id="totalTime">00:00</span></div>
                         <div class="progress-track" id="progressTrack">
                             <div class="progress-fill" id="progressFill"></div>
                             <input type="range" id="progressSlider" value="0" step="0.01">
                         </div>
+                    </div>
+                </div>
+
+                <!-- Equalizador (colapsable) -->
+                <div class="eq-section" id="eqSection">
+                    <div class="eq-header">
+                        <button id="eqToggleBtn" class="eq-toggle">🎛️ EQ ON</button>
+                        <div class="eq-presets" id="eqPresets">
+                            <button class="preset-btn" data-preset="flat">Flat</button>
+                            <button class="preset-btn" data-preset="rock">Rock</button>
+                            <button class="preset-btn" data-preset="pop">Pop</button>
+                            <button class="preset-btn" data-preset="jazz">Jazz</button>
+                            <button class="preset-btn" data-preset="electronic">Electronic</button>
+                            <button class="preset-btn" data-preset="voice">Voice</button>
+                            <button class="preset-btn" data-preset="hiz">Hi‑Z</button>
+                            <button class="preset-btn" data-preset="noise">Noise Reduction</button>
+                        </div>
+                    </div>
+                    <div id="eqControls" class="eq-controls">
+                        <div class="eq-band"><label>60 Hz</label><input type="range" id="eq60" min="-12" max="12" value="0" step="1"><span class="eq-value" id="eq60val">0</span></div>
+                        <div class="eq-band"><label>250 Hz</label><input type="range" id="eq250" min="-12" max="12" value="0" step="1"><span class="eq-value" id="eq250val">0</span></div>
+                        <div class="eq-band"><label>1 kHz</label><input type="range" id="eq1k" min="-12" max="12" value="0" step="1"><span class="eq-value" id="eq1kval">0</span></div>
+                        <div class="eq-band"><label>4 kHz</label><input type="range" id="eq4k" min="-12" max="12" value="0" step="1"><span class="eq-value" id="eq4kval">0</span></div>
+                        <div class="eq-band"><label>12 kHz</label><input type="range" id="eq12k" min="-12" max="12" value="0" step="1"><span class="eq-value" id="eq12kval">0</span></div>
                     </div>
                 </div>
 
@@ -475,7 +587,6 @@
                     <button id="repeatOneBtn" class="loop-btn" title="Repeat one" tabindex="0">🔂</button>
                 </div>
             </div>
-
             <div class="right-col">
                 <div class="playlist-box">
                     <div class="playlist-title">🎧 PLAYLIST · PORTATUNE</div>
@@ -483,10 +594,8 @@
                         <div style="text-align:center; padding:30px; color:#cbd5e1;">🎵 No tracks<br>⬆️ import your files</div>
                     </div>
                 </div>
-
                 <input type="file" id="fileUpload" multiple accept=".mp3,.m4a,.wav,.ogg,.mp4" style="display:none">
                 <button id="importBtn" class="import-btn" tabindex="0">🎵 IMPORT LOCAL MUSIC</button>
-
                 <div class="action-row">
                     <button id="tipsBtn" class="action-btn" tabindex="0">📖 GUIDE</button>
                     <button id="feedbackBtn" class="action-btn" tabindex="0">💬 FEEDBACK</button>
@@ -494,13 +603,9 @@
                 </div>
             </div>
         </div>
-
         <div class="volume-panel">
             <span>🔊</span>
-            <div class="vol-slider" id="volSlider">
-                <div class="vol-fill" id="volFill"></div>
-                <input type="range" id="volumeCtrl" min="0" max="100" value="70" class="vol-input">
-            </div>
+            <div class="vol-slider" id="volSlider"><div class="vol-fill" id="volFill"></div><input type="range" id="volumeCtrl" min="0" max="100" value="70" class="vol-input"></div>
             <span id="volValue">70%</span>
         </div>
     </div>
@@ -515,6 +620,7 @@
             <li><strong>1️⃣ SAVE FILES FIRST</strong><br>Download audio to your device. From WhatsApp: tap & hold → "Save to Files".</li>
             <li><strong>2️⃣ IMPORT</strong><br>Click "IMPORT LOCAL MUSIC" and select your files (multiple at once).</li>
             <li><strong>3️⃣ LOOP MODES</strong><br>🔁 Repeat all playlist. 🔂 Repeat one song. No loop = stops after each track.</li>
+            <li><strong>🎛️ EQ</strong><br>Press "EQ ON" to expand equalizer. Choose presets or adjust sliders.</li>
             <li><strong>🎨 COLORS</strong><br>Use the small circles (top right) to change the interface theme.</li>
             <li><strong>📱 ADD TO HOME SCREEN</strong><br>Share menu → "Add to Home Screen" → standalone app.</li>
             <li><strong>📝 MANAGE PLAYLIST</strong><br>Use ↑ ↓ to reorder tracks. Click ❌ to remove a song.</li>
@@ -550,7 +656,26 @@
     const repeatAllBtn = document.getElementById('repeatAllBtn');
     const repeatOneBtn = document.getElementById('repeatOneBtn');
 
-    // Variables de estado
+    // Equalizador elementos
+    const eqToggleBtn = document.getElementById('eqToggleBtn');
+    const eqControlsDiv = document.getElementById('eqControls');
+    const eqSliders = {
+        eq60: document.getElementById('eq60'), eq250: document.getElementById('eq250'),
+        eq1k: document.getElementById('eq1k'), eq4k: document.getElementById('eq4k'),
+        eq12k: document.getElementById('eq12k')
+    };
+    const eqValues = {
+        eq60val: document.getElementById('eq60val'), eq250val: document.getElementById('eq250val'),
+        eq1kval: document.getElementById('eq1kval'), eq4kval: document.getElementById('eq4kval'),
+        eq12kval: document.getElementById('eq12kval')
+    };
+    let audioContext = null;
+    let sourceNode = null;
+    let filters = [];
+    let eqEnabled = true;
+    let eqInitialized = false;
+
+    // Estado reproducción
     let library = [];
     let currentIdx = 0;
     let isPlaying = false;
@@ -558,30 +683,103 @@
     let repeatAll = false;
     let repeatOne = false;
 
-    // --- Navegación por teclado ---
-    const focusableSelectors = ['#prevBtn', '#playBtn', '#nextBtn', '#repeatAllBtn', '#repeatOneBtn', '#importBtn', '#tipsBtn', '#feedbackBtn', '#donateBtn'];
-    let currentFocusIndex = 0;
-    let keyboardActive = false;
-    function getFocusableButtons() { return focusableSelectors.map(sel => document.querySelector(sel)).filter(el => el); }
-    function focusButton(index) { const btns = getFocusableButtons(); if(!btns.length) return; const idx = (index + btns.length) % btns.length; btns[idx].focus(); currentFocusIndex = idx; }
-    document.addEventListener('keydown', (e) => {
-        if(tipsModal.classList.contains('active')) return;
-        if(e.key === 'ArrowLeft') { e.preventDefault(); keyboardActive=true; focusButton(currentFocusIndex-1); }
-        else if(e.key === 'ArrowRight') { e.preventDefault(); keyboardActive=true; focusButton(currentFocusIndex+1); }
-        else if(e.key === 'ArrowDown') { e.preventDefault(); if(library.length){ const items=document.querySelectorAll('.song-row'); if(items.length){ let nextIdx=(currentPlaylistIndex+1)%items.length; items[nextIdx].focus(); setPlaylistFocus(nextIdx); } } }
-        else if(e.key === 'ArrowUp') { e.preventDefault(); if(library.length){ const items=document.querySelectorAll('.song-row'); if(items.length){ let prevIdx=(currentPlaylistIndex-1+items.length)%items.length; items[prevIdx].focus(); setPlaylistFocus(prevIdx); } } }
-        else if(e.key === 'Enter'){ if(document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('song-row')){ e.preventDefault(); const idxAttr=document.activeElement.getAttribute('data-index'); if(idxAttr!==null){ const idx=parseInt(idxAttr,10); if(!isNaN(idx) && library[idx]){ currentIdx=idx; isPlaying=true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); refreshUI(); } } } }
-    });
-    let currentPlaylistIndex = 0;
-    function setPlaylistFocus(idx) { const items = document.querySelectorAll('.song-row'); if(items[idx]){ items[idx].focus(); currentPlaylistIndex=idx; } }
-    function updatePlaylistFocusAfterRender() { const items = document.querySelectorAll('.song-row'); if(items.length && keyboardActive) items[currentPlaylistIndex]?.focus(); }
+    // ========== Ecualizador (Web Audio API) ==========
+    function initEqualizer() {
+        if (audioContext) return;
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        sourceNode = audioContext.createMediaElementSource(audio);
+        const frequencies = [60, 250, 1000, 4000, 12000];
+        filters = frequencies.map(freq => {
+            const filter = audioContext.createBiquadFilter();
+            filter.type = 'peaking';
+            filter.frequency.value = freq;
+            filter.Q.value = 1;
+            filter.gain.value = 0;
+            return filter;
+        });
+        let prev = sourceNode;
+        filters.forEach(f => { prev.connect(f); prev = f; });
+        prev.connect(audioContext.destination);
+        applyEqGains();
+        eqInitialized = true;
+        if (audioContext.state === 'suspended') audioContext.resume();
+    }
 
-    // Funciones auxiliares básicas
-    const formatTime = (sec) => { if(isNaN(sec)) return '00:00'; const m=Math.floor(sec/60); const s=Math.floor(sec%60); return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; };
-    const updateCounter = () => { if(!library.length) trackCounterSpan.innerText = `TRACK 00/00`; else trackCounterSpan.innerText = `TRACK ${(currentIdx+1).toString().padStart(2,'0')}/${library.length.toString().padStart(2,'0')}`; };
-    const refreshUI = () => { if(library[currentIdx]) songTitleSpan.innerText = library[currentIdx].name; else songTitleSpan.innerText = '🎵 NO FILE'; playBtn.innerText = isPlaying ? '⏸ PAUSE' : '▶ PLAY'; updateCounter(); if(repeatAll) repeatAllBtn.classList.add('active'); else repeatAllBtn.classList.remove('active'); if(repeatOne) repeatOneBtn.classList.add('active'); else repeatOneBtn.classList.remove('active'); };
+    function applyEqGains() {
+        if (!eqEnabled || !filters.length) return;
+        const gains = [
+            parseFloat(eqSliders.eq60.value), parseFloat(eqSliders.eq250.value),
+            parseFloat(eqSliders.eq1k.value), parseFloat(eqSliders.eq4k.value),
+            parseFloat(eqSliders.eq12k.value)
+        ];
+        filters.forEach((f, idx) => { f.gain.value = gains[idx]; });
+    }
+
+    function updateEqDisplay() {
+        for (let id in eqSliders) {
+            const val = eqSliders[id].value;
+            eqValues[id + 'val'].innerText = val;
+        }
+        if (eqInitialized) applyEqGains();
+    }
+
+    function setEqPreset(preset) {
+        let gains = [0,0,0,0,0];
+        switch(preset) {
+            case 'rock': gains = [4,2,-2,-1,3]; break;
+            case 'pop': gains = [2,1,-1,1,2]; break;
+            case 'jazz': gains = [2,1,0,1,3]; break;
+            case 'electronic': gains = [5,2,0,2,4]; break;
+            case 'voice': gains = [1,3,2,0,0]; break;
+            case 'hiz': gains = [0,0,1,3,5]; break;
+            case 'noise': gains = [-2,-1,-1,0,1]; break;
+            default: gains = [0,0,0,0,0];
+        }
+        const keys = ['eq60','eq250','eq1k','eq4k','eq12k'];
+        keys.forEach((key, idx) => {
+            eqSliders[key].value = gains[idx];
+        });
+        updateEqDisplay();
+    }
+
+    // Eventos equalizador
+    eqToggleBtn.addEventListener('click', () => {
+        if (eqControlsDiv.classList.contains('eq-hidden')) {
+            eqControlsDiv.classList.remove('eq-hidden');
+            eqToggleBtn.textContent = '🎛️ EQ ON';
+            eqEnabled = true;
+        } else {
+            eqControlsDiv.classList.add('eq-hidden');
+            eqToggleBtn.textContent = '🎛️ EQ OFF';
+            eqEnabled = false;
+        }
+        if (eqInitialized && eqEnabled) applyEqGains();
+        else if (!eqEnabled && filters.length) filters.forEach(f => f.gain.value = 0);
+    });
+    for (let id in eqSliders) {
+        eqSliders[id].addEventListener('input', () => {
+            updateEqDisplay();
+            if (eqEnabled && eqInitialized) applyEqGains();
+        });
+    }
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => setEqPreset(btn.dataset.preset));
+    });
+
+    // Inicialización EQ al primer play
+    function ensureEqStarted() {
+        if (!eqInitialized && isPlaying) {
+            initEqualizer();
+            if (audioContext && audioContext.state === 'suspended') audioContext.resume();
+        }
+    }
+
+    // ========== Funciones reproductor ==========
+    function formatTime(sec) { if(isNaN(sec)) return '00:00'; const m=Math.floor(sec/60); const s=Math.floor(sec%60); return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
+    function updateCounter() { if(!library.length) trackCounterSpan.innerText = `TRACK 00/00`; else trackCounterSpan.innerText = `TRACK ${(currentIdx+1).toString().padStart(2,'0')}/${library.length.toString().padStart(2,'0')}`; }
+    function refreshUI() { if(library[currentIdx]) songTitleSpan.innerText = library[currentIdx].name; else songTitleSpan.innerText = '🎵 NO FILE'; playBtn.innerText = isPlaying ? '⏸ PAUSE' : '▶ PLAY'; updateCounter(); if(repeatAll) repeatAllBtn.classList.add('active'); else repeatAllBtn.classList.remove('active'); if(repeatOne) repeatOneBtn.classList.add('active'); else repeatOneBtn.classList.remove('active'); }
     
-    const loadTrack = (index) => { 
+    function loadTrack(index) { 
         if(!library[index]) return;
         const wasPlaying = isPlaying;
         audio.src = library[index].url;
@@ -590,186 +788,102 @@
         if(wasPlaying) audio.play().catch(e=>console.log("play blocked",e));
         refreshUI();
         refreshPlaylistHighlight();
-    };
+    }
 
-    // Refresca solo el resaltado visual (no reconstruye el HTML)
     function refreshPlaylistHighlight() {
         const rows = document.querySelectorAll('.song-row');
         rows.forEach((row, idx) => {
             if(idx === currentIdx && isPlaying) {
                 row.classList.add('now-playing');
                 if(!row.querySelector('.playing-led')) {
-                    const led = document.createElement('span');
-                    led.className = 'playing-led';
+                    const led = document.createElement('span'); led.className = 'playing-led';
                     row.querySelector('.song-info')?.appendChild(led);
                 }
             } else {
                 row.classList.remove('now-playing');
-                const led = row.querySelector('.playing-led');
-                if(led) led.remove();
+                const led = row.querySelector('.playing-led'); if(led) led.remove();
             }
         });
         updateCounter();
     }
 
-    // ACTUALIZAR NÚMEROS DE PISTA (sin recargar) después de mover/borrar
     function updateTrackNumbers() {
         const rows = document.querySelectorAll('.song-row');
         rows.forEach((row, idx) => {
             const numberSpan = row.querySelector('.song-info span:first-child');
             if(numberSpan) numberSpan.textContent = (idx+1).toString().padStart(2,'0');
             row.setAttribute('data-index', idx);
-            // Actualizar data-idx de los botones dentro de cada fila
-            const moveUpBtn = row.querySelector('.move-up');
-            const moveDownBtn = row.querySelector('.move-down');
-            const deleteBtn = row.querySelector('.delete-btn');
-            if(moveUpBtn) moveUpBtn.setAttribute('data-idx', idx);
-            if(moveDownBtn) moveDownBtn.setAttribute('data-idx', idx);
-            if(deleteBtn) deleteBtn.setAttribute('data-idx', idx);
+            const moveUpBtn = row.querySelector('.move-up'); if(moveUpBtn) moveUpBtn.setAttribute('data-idx', idx);
+            const moveDownBtn = row.querySelector('.move-down'); if(moveDownBtn) moveDownBtn.setAttribute('data-idx', idx);
+            const deleteBtn = row.querySelector('.delete-btn'); if(deleteBtn) deleteBtn.setAttribute('data-idx', idx);
         });
     }
 
-    // MOVER TRACK SIN RECARGAR (DOM puro, sin afectar reproducción)
     function moveSongDOM(fromIdx, toIdx) {
         if(toIdx < 0 || toIdx >= library.length) return;
-        // Guardar estado de reproducción actual (tiempo, playing, URL)
-        const wasPlaying = isPlaying;
-        const currentTime = audio.currentTime;
-        const currentUrl = audio.src;
-        
-        // Mover en el array "library"
+        const wasPlaying = isPlaying, currentTime = audio.currentTime, currentUrl = audio.src;
         const [moved] = library.splice(fromIdx, 1);
         library.splice(toIdx, 0, moved);
-        
-        // Obtener los elementos DOM y moverlos físicamente
         const rows = document.querySelectorAll('.song-row');
         if(fromIdx < rows.length && toIdx < rows.length) {
-            if(fromIdx < toIdx) {
-                rows[toIdx].insertAdjacentElement('afterend', rows[fromIdx]);
-            } else {
-                rows[toIdx].insertAdjacentElement('beforebegin', rows[fromIdx]);
-            }
+            if(fromIdx < toIdx) rows[toIdx].insertAdjacentElement('afterend', rows[fromIdx]);
+            else rows[toIdx].insertAdjacentElement('beforebegin', rows[fromIdx]);
         }
-        
-        // Ajustar currentIdx si la canción actual se movió
-        if(currentIdx === fromIdx) {
-            currentIdx = toIdx;
-        } else if(fromIdx < currentIdx && toIdx >= currentIdx) {
-            currentIdx--;
-        } else if(fromIdx > currentIdx && toIdx <= currentIdx) {
-            currentIdx++;
-        }
-        
-        // Actualizar números de pista en DOM
+        if(currentIdx === fromIdx) currentIdx = toIdx;
+        else if(fromIdx < currentIdx && toIdx >= currentIdx) currentIdx--;
+        else if(fromIdx > currentIdx && toIdx <= currentIdx) currentIdx++;
         updateTrackNumbers();
-        
-        // Restaurar reproducción exactamente como estaba
         if(wasPlaying && library[currentIdx]) {
             if(audio.src !== library[currentIdx].url) {
                 audio.src = library[currentIdx].url;
                 audio.currentTime = currentTime;
                 audio.load();
                 audio.play().catch(e=>console.log(e));
-            } else {
-                if(audio.currentTime !== currentTime) audio.currentTime = currentTime;
-            }
+            } else if(audio.currentTime !== currentTime) audio.currentTime = currentTime;
         }
-        
-        refreshPlaylistHighlight();
-        refreshUI();
+        refreshPlaylistHighlight(); refreshUI();
     }
 
-    // Eliminar canción (manteniendo reproducción si no se borra la actual)
     function deleteSongDOM(idx) {
         if(idx < 0 || idx >= library.length) return;
         const wasPlayingCurrent = (idx === currentIdx && isPlaying);
-        const currentTime = audio.currentTime;
-        const currentUrl = audio.src;
-        
-        // Eliminar del array y del DOM
+        const currentTime = audio.currentTime, currentUrl = audio.src;
         library.splice(idx, 1);
         const rows = document.querySelectorAll('.song-row');
         if(rows[idx]) rows[idx].remove();
-        
-        if(library.length === 0) {
-            // Lista vacía
-            currentIdx = 0;
-            isPlaying = false;
-            audio.pause();
-            audio.src = '';
-            songTitleSpan.innerText = '🎵 NO FILE';
-            refreshUI();
-            playlistDiv.innerHTML = `<div style="text-align:center; padding:30px; color:#cbd5e1;">🎵 No tracks<br>⬆️ import your files</div>`;
-            return;
-        }
-        
-        // Ajustar índices después de borrar
+        if(library.length === 0) { currentIdx = 0; isPlaying = false; audio.pause(); audio.src = ''; songTitleSpan.innerText = '🎵 NO FILE'; refreshUI(); playlistDiv.innerHTML = `<div style="text-align:center; padding:30px; color:#cbd5e1;">🎵 No tracks<br>⬆️ import your files</div>`; return; }
         if(currentIdx >= library.length) currentIdx = library.length - 1;
         if(idx < currentIdx) currentIdx--;
-        
-        // Restaurar reproducción
-        if(wasPlayingCurrent) {
-            loadTrack(currentIdx);
-            if(isPlaying) audio.play().catch(e=>console.log(e));
-        } else if(isPlaying && library[currentIdx]) {
-            if(audio.src !== library[currentIdx].url) {
-                audio.src = library[currentIdx].url;
-                audio.currentTime = currentTime;
-                audio.load();
-                audio.play().catch(e=>console.log(e));
-            }
-        }
-        
-        updateTrackNumbers();
-        refreshPlaylistHighlight();
-        refreshUI();
+        if(wasPlayingCurrent) { loadTrack(currentIdx); if(isPlaying) audio.play().catch(e=>console.log(e)); }
+        else if(isPlaying && library[currentIdx]) { if(audio.src !== library[currentIdx].url) { audio.src = library[currentIdx].url; audio.currentTime = currentTime; audio.load(); audio.play().catch(e=>console.log(e)); } }
+        updateTrackNumbers(); refreshPlaylistHighlight(); refreshUI();
     }
 
-    // Renderizado INICIAL (solo cuando se importan archivos o al cargar)
-    function renderPlaylist(keepPlaying = false) {
-        if(!library.length) {
-            playlistDiv.innerHTML = `<div style="text-align:center; padding:30px; color:#cbd5e1;">🎵 No tracks<br>⬆️ import your files</div>`;
-            return;
-        }
+    function renderPlaylist() {
+        if(!library.length) { playlistDiv.innerHTML = `<div style="text-align:center; padding:30px; color:#cbd5e1;">🎵 No tracks<br>⬆️ import your files</div>`; return; }
         let html = '';
         library.forEach((track, idx) => {
             const activeClass = (idx === currentIdx && isPlaying) ? 'now-playing' : '';
-            html += `
-                <div class="song-row ${activeClass}" data-index="${idx}" tabindex="0">
-                    <div class="song-info">
-                        <span style="opacity:0.7; width:30px;">${(idx+1).toString().padStart(2,'0')}</span>
-                        <span class="song-name">${escapeHtml(track.name)}</span>
-                        ${ (idx === currentIdx && isPlaying) ? '<span class="playing-led"></span>' : '' }
-                    </div>
-                    <div class="song-actions">
-                        <button class="move-up" data-action="up" data-idx="${idx}" title="Mover arriba" tabindex="-1">⬆️</button>
-                        <button class="move-down" data-action="down" data-idx="${idx}" title="Mover abajo" tabindex="-1">⬇️</button>
-                        <button class="delete-btn" data-action="delete" data-idx="${idx}" title="Eliminar" tabindex="-1">❌</button>
-                    </div>
-                </div>
-            `;
+            html += `<div class="song-row ${activeClass}" data-index="${idx}" tabindex="0">
+                        <div class="song-info"><span style="opacity:0.7; width:30px;">${(idx+1).toString().padStart(2,'0')}</span><span class="song-name">${escapeHtml(track.name)}</span>${ (idx === currentIdx && isPlaying) ? '<span class="playing-led"></span>' : '' }</div>
+                        <div class="song-actions"><button class="move-up" data-action="up" data-idx="${idx}" title="Mover arriba" tabindex="-1">⬆️</button><button class="move-down" data-action="down" data-idx="${idx}" title="Mover abajo" tabindex="-1">⬇️</button><button class="delete-btn" data-action="delete" data-idx="${idx}" title="Eliminar" tabindex="-1">❌</button></div>
+                    </div>`;
         });
         playlistDiv.innerHTML = html;
-        
-        // Event listeners
         document.querySelectorAll('.move-up').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); const i = parseInt(btn.dataset.idx); if(i > 0) moveSongDOM(i, i-1); }); });
         document.querySelectorAll('.move-down').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); const i = parseInt(btn.dataset.idx); if(i < library.length-1) moveSongDOM(i, i+1); }); });
         document.querySelectorAll('.delete-btn').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); const i = parseInt(btn.dataset.idx); deleteSongDOM(i); }); });
         document.querySelectorAll('.song-info').forEach(info => { const parentRow = info.closest('.song-row'); info.addEventListener('click', () => { const idx = parseInt(parentRow.dataset.index); currentIdx = idx; isPlaying = true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); refreshUI(); }); });
-        
-        updatePlaylistFocusAfterRender();
     }
-
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => { if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m; }); }
 
-    // Eventos del audio
+    // Eventos audio
     audio.addEventListener('timeupdate', () => { if(audio.duration){ const percent=(audio.currentTime/audio.duration)*100; progressSlider.value=percent; progressFill.style.width=percent+'%'; currentTimeSpan.innerText=formatTime(audio.currentTime); totalTimeSpan.innerText=formatTime(audio.duration); } });
     progressSlider.addEventListener('input', (e) => { if(audio.duration) audio.currentTime=(e.target.value/100)*audio.duration; });
     volumeCtrl.addEventListener('input', (e) => { currentVolume=e.target.value; audio.volume=currentVolume/100; volFill.style.width=currentVolume+'%'; volValue.innerText=currentVolume+'%'; });
     audio.addEventListener('ended', () => { if(library.length===0) return; if(repeatOne){ loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); } else if(repeatAll){ currentIdx=(currentIdx+1)%library.length; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); } else { isPlaying=false; refreshUI(); refreshPlaylistHighlight(); } });
 
-    // Controles principales
-    const togglePlay = () => { if(!library.length) return; if(isPlaying) audio.pause(); else audio.play().catch(e=>console.log(e)); isPlaying=!isPlaying; refreshUI(); refreshPlaylistHighlight(); };
+    const togglePlay = () => { if(!library.length) return; if(isPlaying) audio.pause(); else { audio.play().catch(e=>console.log(e)); ensureEqStarted(); } isPlaying=!isPlaying; refreshUI(); refreshPlaylistHighlight(); };
     const nextTrack = () => { if(!library.length) return; if(currentIdx+1<library.length) currentIdx++; else if(repeatAll) currentIdx=0; else return; isPlaying=true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); };
     const prevTrack = () => { if(!library.length) return; if(currentIdx-1>=0) currentIdx--; else if(repeatAll) currentIdx=library.length-1; else return; isPlaying=true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); };
     playBtn.addEventListener('click', togglePlay);
@@ -778,11 +892,9 @@
     repeatAllBtn.addEventListener('click', () => { if(repeatOne) repeatOne=false; repeatAll=!repeatAll; refreshUI(); });
     repeatOneBtn.addEventListener('click', () => { if(repeatAll) repeatAll=false; repeatOne=!repeatOne; refreshUI(); });
 
-    // Importar archivos
     importBtn.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', (e) => { const files=Array.from(e.target.files); let newEntries=[]; files.forEach(file=>{ if(file.type.startsWith('audio/') || /\.(mp3|m4a|wav|ogg|mp4)$/i.test(file.name)){ const url=URL.createObjectURL(file); const name=file.name.replace(/\.[^/.]+$/,''); if(!library.some(s=>s.name===name)) newEntries.push({name,url}); } }); if(!newEntries.length) return; library.push(...newEntries); renderPlaylist(true); if(library.length===newEntries.length){ currentIdx=0; isPlaying=true; loadTrack(0); audio.play().catch(e=>console.log(e)); } fileInput.value=''; });
+    fileInput.addEventListener('change', (e) => { const files=Array.from(e.target.files); let newEntries=[]; files.forEach(f=>{ if(f.type.startsWith('audio/') || /\.(mp3|m4a|wav|ogg|mp4)$/i.test(f.name)){ const url=URL.createObjectURL(f); const name=f.name.replace(/\.[^/.]+$/,''); if(!library.some(s=>s.name===name)) newEntries.push({name,url}); } }); if(!newEntries.length) return; library.push(...newEntries); renderPlaylist(); if(library.length===newEntries.length){ currentIdx=0; isPlaying=true; loadTrack(0); audio.play().catch(e=>console.log(e)); ensureEqStarted(); } fileInput.value=''; });
 
-    // Temas
     const themes = { green:{accent:'#10b981',dark:'#047857',glow:'#34d399',bgEnd:'#064e3b'}, purple:{accent:'#8b5cf6',dark:'#6d28d9',glow:'#a78bfa',bgEnd:'#4c1d95'}, blue:{accent:'#3b82f6',dark:'#1d4ed8',glow:'#60a5fa',bgEnd:'#1e3a8a'}, silver:{accent:'#94a3b8',dark:'#64748b',glow:'#cbd5e1',bgEnd:'#1e293b'}, amber:{accent:'#f59e0b',dark:'#b45309',glow:'#fbbf24',bgEnd:'#78350f'} };
     const applyTheme = (themeName) => { const t=themes[themeName]; if(!t) return; document.documentElement.style.setProperty('--accent', t.accent); document.documentElement.style.setProperty('--accent-dark', t.dark); document.documentElement.style.setProperty('--accent-glow', t.glow); document.body.style.background = `linear-gradient(135deg, #0a0f1e 0%, ${t.bgEnd} 100%)`; document.querySelectorAll('.color-dot').forEach(dot=>{ if(dot.dataset.theme===themeName) dot.classList.add('active'); else dot.classList.remove('active'); }); };
     document.querySelectorAll('.color-dot').forEach(dot=>{ dot.addEventListener('click',()=>applyTheme(dot.dataset.theme)); });
@@ -798,6 +910,9 @@
     applyTheme('green');
     renderPlaylist();
     refreshUI();
+    eqControlsDiv.classList.add('eq-hidden'); // empieza colapsado
+    eqToggleBtn.textContent = '🎛️ EQ OFF';
+    eqEnabled = false;
 </script>
 </body>
 </html>
