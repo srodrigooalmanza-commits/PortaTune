@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>PortaTune | Vintage Local Audio Player</title>
-
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="shortcut icon" href="favicon.ico">
-
     <style>
+        /* ========== RESET Y ESTILOS GLOBALES (sin cambios importantes) ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             background: linear-gradient(135deg, #0a0f1e 0%, #0a1a1a 100%);
             font-family: 'Courier New', 'SF Mono', monospace;
@@ -18,13 +16,11 @@
             padding: 20px;
             transition: background 0.3s ease;
         }
-
         :root {
             --accent: #10b981;
             --accent-dark: #047857;
             --accent-glow: #34d399;
         }
-
         .container { max-width: 1100px; margin: 0 auto; }
         .player-card {
             background: linear-gradient(145deg, #111827 0%, #030712 100%);
@@ -33,7 +29,6 @@
             box-shadow: 0 30px 40px -20px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
             border: 1px solid #1f2937;
         }
-
         .header {
             display: flex;
             justify-content: space-between;
@@ -48,7 +43,6 @@
         .brand-img { height: 32px; width: auto; }
         .brand-text { font-size: 22px; font-weight: bold; color: var(--accent); transition: color 0.2s; }
         .brand-text span { font-weight: 300; }
-
         .color-palette {
             display: flex;
             gap: 8px;
@@ -67,7 +61,6 @@
         }
         .color-dot:hover { transform: scale(1.15); border-color: rgba(255,255,255,0.8); }
         .color-dot.active { border-color: white; box-shadow: 0 0 6px currentColor; transform: scale(1.05); }
-
         .two-columns { display: flex; gap: 40px; flex-wrap: wrap; }
         .left-col { flex: 1.2; min-width: 280px; }
         .lcd {
@@ -88,7 +81,6 @@
         .progress-track { background: #1e293b; height: 3px; border-radius: 4px; position: relative; overflow: hidden; cursor: pointer; }
         .progress-fill { background: var(--accent); width: 0%; height: 100%; box-shadow: 0 0 6px var(--accent); transition: width 0.05s linear; }
         input[type="range"] { width: 100%; opacity: 0; height: 3px; position: absolute; top: 0; cursor: pointer; }
-
         .tool-buttons {
             display: flex;
             gap: 12px;
@@ -110,7 +102,6 @@
         }
         .tool-btn:active { transform: scale(0.97); }
         .tool-btn.eq-btn { background: var(--accent); color: #030712; box-shadow: 0 0 6px var(--accent); }
-
         .transport {
             display: flex;
             gap: 12px;
@@ -150,7 +141,6 @@
             transition: 0.1s linear;
         }
         .loop-btn.active { color: var(--accent); box-shadow: 0 0 6px var(--accent); }
-
         .right-col { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 18px; }
         .playlist-box {
             background: #0f172a;
@@ -242,7 +232,6 @@
         }
         .now-playing .playing-led { background: #030712; }
         @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.8);} }
-
         .import-btn {
             background: var(--accent);
             width: 100%;
@@ -273,7 +262,6 @@
             text-align: center;
         }
         .action-btn:active { transform: scale(0.97); }
-
         .volume-panel {
             background: #0f172a;
             border-radius: 36px;
@@ -292,7 +280,6 @@
         }
         .vol-fill { width: 70%; height: 100%; background: #cbd5e1; border-radius: 4px; }
         .vol-input { width: 100%; opacity: 0; position: absolute; cursor: pointer; }
-
         /* MODALES */
         .modal-overlay {
             display: none;
@@ -384,10 +371,7 @@
             cursor: pointer;
             backdrop-filter: blur(4px);
         }
-        .fullscreen-btn:hover {
-            background: rgba(0,0,0,0.8);
-        }
-
+        .fullscreen-btn:hover { background: rgba(0,0,0,0.8); }
         @media (max-width: 700px) {
             .player-card { padding: 18px; }
             .song-title { font-size: 20px; }
@@ -432,18 +416,13 @@
                     <div class="song-artist" id="songArtist">local library</div>
                     <div class="progress-area">
                         <div class="time-info"><span id="currentTime">00:00</span><span id="totalTime">00:00</span></div>
-                        <div class="progress-track" id="progressTrack">
-                            <div class="progress-fill" id="progressFill"></div>
-                            <input type="range" id="progressSlider" value="0" step="0.01">
-                        </div>
+                        <div class="progress-track" id="progressTrack"><div class="progress-fill" id="progressFill"></div><input type="range" id="progressSlider" value="0" step="0.01"></div>
                     </div>
                 </div>
-
                 <div class="tool-buttons">
                     <button id="eqLauncherBtn" class="tool-btn eq-btn">🎛️ EQ</button>
                     <button id="mandalaLauncherBtn" class="tool-btn">🌀 VISUALIZADOR</button>
                 </div>
-
                 <div class="transport" id="transportBar">
                     <button id="prevBtn" class="transport-btn" tabindex="0">⏮</button>
                     <button id="playBtn" class="transport-btn btn-play" tabindex="0">▶ PLAY</button>
@@ -455,9 +434,7 @@
             <div class="right-col">
                 <div class="playlist-box">
                     <div class="playlist-title">🎧 PLAYLIST · PORTATUNE</div>
-                    <div class="playlist-songs" id="playlistContainer" tabindex="0">
-                        <div style="text-align:center; padding:30px; color:#cbd5e1;">🎵 No tracks<br>⬆️ import your files</div>
-                    </div>
+                    <div class="playlist-songs" id="playlistContainer" tabindex="0"><div style="text-align:center; padding:30px; color:#cbd5e1;">🎵 No tracks<br>⬆️ import your files</div></div>
                 </div>
                 <input type="file" id="fileUpload" multiple accept=".mp3,.m4a,.wav,.ogg,.mp4" style="display:none">
                 <button id="importBtn" class="import-btn" tabindex="0">🎵 IMPORT LOCAL MUSIC</button>
@@ -478,7 +455,7 @@
 
 <audio id="audioElement"></audio>
 
-<!-- MODAL EQ -->
+<!-- MODAL EQ (MEJORADO VISUALMENTE) -->
 <div id="eqModal" class="modal-overlay">
     <div class="modal-card">
         <div class="modal-header">
@@ -500,7 +477,7 @@
     </div>
 </div>
 
-<!-- MODAL MANDALA con pantalla completa -->
+<!-- MODAL MANDALA (MEJORADO: RESPETA SILENCIOS Y GIRA) -->
 <div id="mandalaModal" class="modal-overlay">
     <div class="modal-card">
         <div class="modal-header">
@@ -572,7 +549,7 @@
     const ctxSpectrum = spectrumCanvas.getContext('2d');
     const ctxMandala = mandalaCanvas.getContext('2d');
 
-    // Estado
+    // Estado general
     let library = [];
     let currentIdx = 0;
     let isPlaying = false;
@@ -580,7 +557,7 @@
     let repeatAll = false;
     let repeatOne = false;
 
-    // Web Audio EQ
+    // Web Audio (EQ)
     let audioContext = null;
     let sourceNode = null;
     let filters = [];
@@ -590,23 +567,23 @@
     // Analizador para el mandala
     let analyser = null;
     let mandalaAnimationId = null;
-    let rotationDirection = 1;  // 1 = derecha, -1 = izquierda
+    let rotationDirection = 1;
     let rotationAngle = 0;
-    let lastDirectionChange = 0;
+    let lastDirChange = 0;
 
-    // ========== Ecualizador (solo presets) ==========
+    // ========== 1. Ecualizador (mejora visual de las barras) ==========
     function initEqualizer() {
         if (audioContext) return;
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         sourceNode = audioContext.createMediaElementSource(audio);
-        const frequencies = [60, 250, 1000, 4000, 12000];
-        filters = frequencies.map(freq => {
-            const filter = audioContext.createBiquadFilter();
-            filter.type = 'peaking';
-            filter.frequency.value = freq;
-            filter.Q.value = 1;
-            filter.gain.value = 0;
-            return filter;
+        const freqs = [60, 250, 1000, 4000, 12000];
+        filters = freqs.map(f => {
+            const ftr = audioContext.createBiquadFilter();
+            ftr.type = 'peaking';
+            ftr.frequency.value = f;
+            ftr.Q.value = 1;
+            ftr.gain.value = 0;
+            return ftr;
         });
         let prev = sourceNode;
         filters.forEach(f => { prev.connect(f); prev = f; });
@@ -628,12 +605,11 @@
             case 'noise': gains = [-2,-1,-1,0,1]; break;
             default: gains = [0,0,0,0,0];
         }
-        if (filters.length) {
-            filters.forEach((f, idx) => { f.gain.value = gains[idx]; });
-        }
+        if (filters.length) filters.forEach((f, idx) => { f.gain.value = gains[idx]; });
         drawSpectrumFromGains(gains);
     }
 
+    // Dibuja las barras con separación, borde redondeado y gradiente
     function drawSpectrumFromGains(gains) {
         if (!ctxSpectrum) return;
         const w = spectrumCanvas.clientWidth;
@@ -642,25 +618,24 @@
         spectrumCanvas.height = h;
         ctxSpectrum.clearRect(0, 0, w, h);
         const freqs = [60,250,1000,4000,12000];
-        const barWidth = (w - 40) / freqs.length * 0.6;
+        const barWidth = (w - 40) / freqs.length * 0.55;
         const spacing = (w - 40) / freqs.length;
         for (let i = 0; i < freqs.length; i++) {
             const level = Math.min(1, Math.max(0, (gains[i] + 12) / 24));
-            const barHeight = Math.max(4, level * (h - 40));
+            const barHeight = Math.max(6, level * (h - 50));
             const x = 25 + i * spacing;
-            const y = h - barHeight - 25;
-            // Gradiente vertical para las barras
+            const y = h - barHeight - 30;
             const gradient = ctxSpectrum.createLinearGradient(x, y, x, y + barHeight);
-            gradient.addColorStop(0, `hsl(${120 + level * 60}, 80%, 65%)`);
-            gradient.addColorStop(1, `hsl(${120 + level * 60}, 80%, 45%)`);
+            gradient.addColorStop(0, `hsl(${120 + level * 60}, 85%, 65%)`);
+            gradient.addColorStop(1, `hsl(${120 + level * 60}, 85%, 40%)`);
             ctxSpectrum.fillStyle = gradient;
-            ctxSpectrum.shadowBlur = 4;
-            ctxSpectrum.shadowColor = `hsl(${120 + level * 60}, 80%, 50%)`;
+            ctxSpectrum.shadowBlur = 6;
+            ctxSpectrum.shadowColor = `hsla(${120 + level * 60}, 80%, 50%, 0.8)`;
             ctxSpectrum.fillRect(x, y, barWidth, barHeight);
             ctxSpectrum.shadowBlur = 0;
-            ctxSpectrum.fillStyle = '#cbd5e1';
-            ctxSpectrum.font = '10px monospace';
-            ctxSpectrum.fillText(freqs[i] + 'Hz', x + barWidth/2 - 15, h - 10);
+            ctxSpectrum.fillStyle = '#a0aec0';
+            ctxSpectrum.font = 'bold 10px monospace';
+            ctxSpectrum.fillText(freqs[i] + 'Hz', x + barWidth/2 - 12, h - 10);
         }
     }
 
@@ -677,10 +652,10 @@
         }
     }
 
-    // ========== Mandala con movimiento fluido (giro y tamaño) ==========
+    // ========== 2. Mandala: tamaño dinámico (incluso cero en silencio) y giro cambiante ==========
     function resizeMandalaCanvas() {
-        const container = mandalaContainer;
-        const w = container.clientWidth;
+        const cont = mandalaContainer;
+        const w = cont.clientWidth;
         const h = 300;
         mandalaCanvas.width = w;
         mandalaCanvas.height = h;
@@ -700,95 +675,80 @@
                 sourceNode.connect(analyser);
                 analyser.connect(audioContext.destination);
             }
-            startMandalaAnimation(analyser);
+            startMandalaAnimation();
         } else {
-            startMandalaAnimation(analyser);
+            startMandalaAnimation();
         }
         resizeMandalaCanvas();
     }
 
-    function startMandalaAnimation(analyserNode) {
+    function startMandalaAnimation() {
         if (mandalaAnimationId) cancelAnimationFrame(mandalaAnimationId);
-        const bufferLength = analyserNode.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
+        const bufferLen = analyser.frequencyBinCount;
+        const data = new Uint8Array(bufferLen);
         function draw() {
             if (!mandalaModal.classList.contains('active')) {
                 if (mandalaAnimationId) cancelAnimationFrame(mandalaAnimationId);
                 mandalaAnimationId = null;
                 return;
             }
-            analyserNode.getByteFrequencyData(dataArray);
-            const avg = dataArray.reduce((a,b)=>a+b,0)/bufferLength;
-            const intensity = Math.min(1, avg / 128);
-            
-            // Cambiar dirección de giro aleatoriamente cada ~3-5 segundos
+            analyser.getByteFrequencyData(data);
+            const avg = data.reduce((a,b)=>a+b,0)/bufferLen;
+            let intensity = avg / 128;
+            if (intensity < 0.01) intensity = 0;
             const now = Date.now();
-            if (!lastDirectionChange || now - lastDirectionChange > 4000 + Math.random() * 2000) {
+            if (!lastDirChange || now - lastDirChange > 3500) {
                 rotationDirection = (Math.random() > 0.5) ? 1 : -1;
-                lastDirectionChange = now;
+                lastDirChange = now;
             }
-            // Velocidad de giro proporcional a la intensidad musical
-            const rotationSpeed = 0.02 * (0.3 + intensity * 0.7);
-            rotationAngle += rotationDirection * rotationSpeed;
-            
+            const speed = 0.015 * (0.2 + intensity * 0.8);
+            rotationAngle += rotationDirection * speed;
             const w = mandalaCanvas.width;
             const h = mandalaCanvas.height;
             const centerX = w/2, centerY = h/2;
-            
-            // El tamaño máximo y mínimo también dependen de la intensidad
-            const minRadius = (intensity < 0.05) ? 0 : 15;
-            const maxRadius = Math.min(w,h)/2.2;
-            let radius = minRadius + intensity * (maxRadius - minRadius);
-            // si intensidad es casi cero, radio mínimo cercano a 0
-            if (intensity < 0.02) radius = 0;
-            
+            const maxR = Math.min(w,h)/2.2;
+            let currentRadius = maxR * intensity;
+            if (currentRadius < 2) currentRadius = 0;
             ctxMandala.clearRect(0, 0, w, h);
-            if (radius < 2 || intensity < 0.02) {
-                // Silencio -> fondo negro limpio (sin trazos)
+            if (currentRadius < 1) {
+                // Silencio total: fondo negro y nada más
                 ctxMandala.fillStyle = '#000000';
                 ctxMandala.fillRect(0, 0, w, h);
                 mandalaAnimationId = requestAnimationFrame(draw);
                 return;
             }
-            
-            // Color del mandala: tonalidad que varía con la intensidad
-            const hue = (rotationAngle * 50) % 360;
+            const hue = (rotationAngle * 40) % 360;
             ctxMandala.save();
             ctxMandala.translate(centerX, centerY);
             ctxMandala.rotate(rotationAngle);
-            
-            // Dibujar un mandala con múltiples anillos y pétalos
-            const rings = 3;
-            for (let r = 0; r < rings; r++) {
-                const ringRadius = radius * (0.4 + r * 0.3);
-                const alpha = 0.6 - r * 0.2;
+            // Anillos concéntricos
+            for (let r = 1; r <= 3; r++) {
+                const ringRad = currentRadius * (0.3 + r * 0.25);
                 ctxMandala.beginPath();
-                ctxMandala.arc(0, 0, ringRadius, 0, Math.PI * 2);
-                ctxMandala.strokeStyle = `hsla(${hue}, 80%, 65%, ${alpha})`;
-                ctxMandala.lineWidth = 1.5;
+                ctxMandala.arc(0, 0, ringRad, 0, Math.PI * 2);
+                ctxMandala.strokeStyle = `hsla(${hue}, 85%, 65%, ${0.7 - r*0.15})`;
+                ctxMandala.lineWidth = 1.8;
                 ctxMandala.stroke();
             }
-            // Pétalos radiales
-            const petals = Math.max(12, Math.floor(24 * intensity));
-            for (let i = 0; i < petals; i++) {
-                const angle = (i / petals) * Math.PI * 2;
-                const x1 = Math.cos(angle) * radius * 0.2;
-                const y1 = Math.sin(angle) * radius * 0.2;
-                const x2 = Math.cos(angle) * radius;
-                const y2 = Math.sin(angle) * radius;
+            // Radios
+            const numSpokes = Math.max(12, Math.floor(24 * intensity));
+            for (let i = 0; i < numSpokes; i++) {
+                const ang = (i / numSpokes) * Math.PI * 2;
+                const x1 = Math.cos(ang) * currentRadius * 0.15;
+                const y1 = Math.sin(ang) * currentRadius * 0.15;
+                const x2 = Math.cos(ang) * currentRadius;
+                const y2 = Math.sin(ang) * currentRadius;
                 ctxMandala.beginPath();
                 ctxMandala.moveTo(x1, y1);
                 ctxMandala.lineTo(x2, y2);
-                ctxMandala.strokeStyle = `hsla(${hue + i * 10}, 70%, 60%, 0.7)`;
-                ctxMandala.lineWidth = 1.2;
+                ctxMandala.strokeStyle = `hsla(${hue + i*8}, 75%, 60%, 0.75)`;
                 ctxMandala.stroke();
             }
-            // Círculo central
+            // Centro
             ctxMandala.beginPath();
-            ctxMandala.arc(0, 0, radius * 0.12, 0, Math.PI * 2);
-            ctxMandala.fillStyle = `hsl(${hue}, 70%, 55%)`;
+            ctxMandala.arc(0, 0, currentRadius * 0.12, 0, Math.PI * 2);
+            ctxMandala.fillStyle = `hsl(${hue}, 80%, 60%)`;
             ctxMandala.fill();
-            
             ctxMandala.restore();
             mandalaAnimationId = requestAnimationFrame(draw);
         }
@@ -796,171 +756,79 @@
     }
 
     function stopMandala() {
-        if (mandalaAnimationId) {
-            cancelAnimationFrame(mandalaAnimationId);
-            mandalaAnimationId = null;
-        }
-        if (analyser) {
-            if (filters.length && audioContext) {
+        if (mandalaAnimationId) cancelAnimationFrame(mandalaAnimationId);
+        mandalaAnimationId = null;
+        if (analyser && audioContext) {
+            if (filters.length) {
                 filters[filters.length-1].disconnect();
                 filters[filters.length-1].connect(audioContext.destination);
-            } else if (sourceNode && audioContext) {
+            } else if (sourceNode) {
                 sourceNode.disconnect();
                 sourceNode.connect(audioContext.destination);
             }
         }
-        rotationAngle = 0;
     }
 
-    // Pantalla completa para el canvas mandala
-    function enterFullscreen(element) {
-        if (element.requestFullscreen) {
-            element.requestFullscreen();
-        } else if (element.webkitRequestFullscreen) {
-            element.webkitRequestFullscreen();
-        }
+    function enterFullscreen(el) {
+        if (el.requestFullscreen) el.requestFullscreen();
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
     }
-
-    fullscreenBtn.addEventListener('click', () => {
-        enterFullscreen(mandalaContainer);
-    });
-
-    // Ajustar tamaño del canvas al entrar/salir de fullscreen
-    function handleFullscreenChange() {
+    fullscreenBtn.onclick = () => enterFullscreen(mandalaContainer);
+    function handleFullscreen() {
         if (document.fullscreenElement === mandalaContainer || document.webkitFullscreenElement === mandalaContainer) {
-            const w = mandalaContainer.clientWidth;
-            const h = mandalaContainer.clientHeight;
-            mandalaCanvas.width = w;
-            mandalaCanvas.height = h;
+            mandalaCanvas.width = mandalaContainer.clientWidth;
+            mandalaCanvas.height = mandalaContainer.clientHeight;
         } else {
             resizeMandalaCanvas();
         }
     }
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('fullscreenchange', handleFullscreen);
+    document.addEventListener('webkitfullscreenchange', handleFullscreen);
 
-    // ========== Reproductor básico (igual que antes, sin cambios) ==========
-    function formatTime(sec) { if(isNaN(sec)) return '00:00'; const m=Math.floor(sec/60); const s=Math.floor(sec%60); return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
+    // ========== REPRODUCTOR (sin cambios funcionales, solo compatibilidad) ==========
+    function formatTime(sec) { if(isNaN(sec)) return '00:00'; const m=Math.floor(sec/60), s=Math.floor(sec%60); return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
     function updateCounter() { if(!library.length) trackCounterSpan.innerText = `TRACK 00/00`; else trackCounterSpan.innerText = `TRACK ${(currentIdx+1).toString().padStart(2,'0')}/${library.length.toString().padStart(2,'0')}`; }
     function refreshUI() { if(library[currentIdx]) songTitleSpan.innerText = library[currentIdx].name; else songTitleSpan.innerText = '🎵 NO FILE'; playBtn.innerText = isPlaying ? '⏸ PAUSE' : '▶ PLAY'; updateCounter(); if(repeatAll) repeatAllBtn.classList.add('active'); else repeatAllBtn.classList.remove('active'); if(repeatOne) repeatOneBtn.classList.add('active'); else repeatOneBtn.classList.remove('active'); }
-    
-    function loadTrack(index) { 
-        if(!library[index]) return;
-        const wasPlaying = isPlaying;
-        audio.src = library[index].url;
-        songTitleSpan.innerText = library[index].name;
-        audio.load();
-        if(wasPlaying) audio.play().catch(e=>console.log("play blocked",e));
-        refreshUI();
-        refreshPlaylistHighlight();
-    }
-
-    function refreshPlaylistHighlight() {
-        const rows = document.querySelectorAll('.song-row');
-        rows.forEach((row, idx) => {
-            if(idx === currentIdx && isPlaying) { row.classList.add('now-playing'); if(!row.querySelector('.playing-led')) { const led = document.createElement('span'); led.className = 'playing-led'; row.querySelector('.song-info')?.appendChild(led); } }
-            else { row.classList.remove('now-playing'); const led = row.querySelector('.playing-led'); if(led) led.remove(); }
-        });
-        updateCounter();
-    }
-
-    function updateTrackNumbers() {
-        const rows = document.querySelectorAll('.song-row');
-        rows.forEach((row, idx) => {
-            const numberSpan = row.querySelector('.song-info span:first-child');
-            if(numberSpan) numberSpan.textContent = (idx+1).toString().padStart(2,'0');
-            row.setAttribute('data-index', idx);
-            const moveUpBtn = row.querySelector('.move-up'); if(moveUpBtn) moveUpBtn.setAttribute('data-idx', idx);
-            const moveDownBtn = row.querySelector('.move-down'); if(moveDownBtn) moveDownBtn.setAttribute('data-idx', idx);
-            const deleteBtn = row.querySelector('.delete-btn'); if(deleteBtn) deleteBtn.setAttribute('data-idx', idx);
-        });
-    }
-
-    function moveSongDOM(fromIdx, toIdx) {
-        if(toIdx < 0 || toIdx >= library.length) return;
-        const wasPlaying = isPlaying, currentTime = audio.currentTime, currentUrl = audio.src;
-        const [moved] = library.splice(fromIdx, 1);
-        library.splice(toIdx, 0, moved);
-        const rows = document.querySelectorAll('.song-row');
-        if(fromIdx < rows.length && toIdx < rows.length) { if(fromIdx < toIdx) rows[toIdx].insertAdjacentElement('afterend', rows[fromIdx]); else rows[toIdx].insertAdjacentElement('beforebegin', rows[fromIdx]); }
-        if(currentIdx === fromIdx) currentIdx = toIdx;
-        else if(fromIdx < currentIdx && toIdx >= currentIdx) currentIdx--;
-        else if(fromIdx > currentIdx && toIdx <= currentIdx) currentIdx++;
-        updateTrackNumbers();
-        if(wasPlaying && library[currentIdx]) { if(audio.src !== library[currentIdx].url) { audio.src = library[currentIdx].url; audio.currentTime = currentTime; audio.load(); audio.play().catch(e=>console.log(e)); } else if(audio.currentTime !== currentTime) audio.currentTime = currentTime; }
-        refreshPlaylistHighlight(); refreshUI();
-    }
-
-    function deleteSongDOM(idx) {
-        if(idx < 0 || idx >= library.length) return;
-        const wasPlayingCurrent = (idx === currentIdx && isPlaying);
-        const currentTime = audio.currentTime, currentUrl = audio.src;
-        library.splice(idx, 1);
-        const rows = document.querySelectorAll('.song-row');
-        if(rows[idx]) rows[idx].remove();
-        if(library.length === 0) { currentIdx = 0; isPlaying = false; audio.pause(); audio.src = ''; songTitleSpan.innerText = '🎵 NO FILE'; refreshUI(); playlistDiv.innerHTML = `<div style="text-align:center; padding:30px; color:#cbd5e1;">🎵 No tracks<br>⬆️ import your files</div>`; return; }
-        if(currentIdx >= library.length) currentIdx = library.length - 1;
-        if(idx < currentIdx) currentIdx--;
-        if(wasPlayingCurrent) { loadTrack(currentIdx); if(isPlaying) audio.play().catch(e=>console.log(e)); }
-        else if(isPlaying && library[currentIdx]) { if(audio.src !== library[currentIdx].url) { audio.src = library[currentIdx].url; audio.currentTime = currentTime; audio.load(); audio.play().catch(e=>console.log(e)); } }
-        updateTrackNumbers(); refreshPlaylistHighlight(); refreshUI();
-    }
-
-    function renderPlaylist() {
-        if(!library.length) { playlistDiv.innerHTML = `<div style="text-align:center; padding:30px; color:#cbd5e1;">🎵 No tracks<br>⬆️ import your files</div>`; return; }
-        let html = '';
-        library.forEach((track, idx) => {
-            const activeClass = (idx === currentIdx && isPlaying) ? 'now-playing' : '';
-            html += `<div class="song-row ${activeClass}" data-index="${idx}" tabindex="0"><div class="song-info"><span style="opacity:0.7; width:30px;">${(idx+1).toString().padStart(2,'0')}</span><span class="song-name">${escapeHtml(track.name)}</span>${ (idx === currentIdx && isPlaying) ? '<span class="playing-led"></span>' : '' }</div><div class="song-actions"><button class="move-up" data-action="up" data-idx="${idx}" tabindex="-1">⬆️</button><button class="move-down" data-action="down" data-idx="${idx}" tabindex="-1">⬇️</button><button class="delete-btn" data-action="delete" data-idx="${idx}" tabindex="-1">❌</button></div></div>`;
-        });
-        playlistDiv.innerHTML = html;
-        document.querySelectorAll('.move-up').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); const i = parseInt(btn.dataset.idx); if(i > 0) moveSongDOM(i, i-1); }); });
-        document.querySelectorAll('.move-down').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); const i = parseInt(btn.dataset.idx); if(i < library.length-1) moveSongDOM(i, i+1); }); });
-        document.querySelectorAll('.delete-btn').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); const i = parseInt(btn.dataset.idx); deleteSongDOM(i); }); });
-        document.querySelectorAll('.song-info').forEach(info => { const parentRow = info.closest('.song-row'); info.addEventListener('click', () => { const idx = parseInt(parentRow.dataset.index); currentIdx = idx; isPlaying = true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); refreshUI(); }); });
-    }
-    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => { if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m; }); }
-
-    // ========== Eventos audio y player ==========
-    audio.addEventListener('timeupdate', () => { if(audio.duration){ const percent=(audio.currentTime/audio.duration)*100; progressSlider.value=percent; progressFill.style.width=percent+'%'; currentTimeSpan.innerText=formatTime(audio.currentTime); totalTimeSpan.innerText=formatTime(audio.duration); } });
-    progressSlider.addEventListener('input', (e) => { if(audio.duration) audio.currentTime=(e.target.value/100)*audio.duration; });
-    volumeCtrl.addEventListener('input', (e) => { currentVolume=e.target.value; audio.volume=currentVolume/100; volFill.style.width=currentVolume+'%'; volValue.innerText=currentVolume+'%'; });
-    audio.addEventListener('ended', () => { if(library.length===0) return; if(repeatOne) { loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); } else if(repeatAll) { currentIdx=(currentIdx+1)%library.length; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); } else { isPlaying=false; refreshUI(); refreshPlaylistHighlight(); } });
-
-    const togglePlay = () => { if(!library.length) return; if(isPlaying) audio.pause(); else { audio.play().catch(e=>console.log(e)); ensureEqStarted(); } isPlaying=!isPlaying; refreshUI(); refreshPlaylistHighlight(); };
-    const nextTrack = () => { if(!library.length) return; if(currentIdx+1<library.length) currentIdx++; else if(repeatAll) currentIdx=0; else return; isPlaying=true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); };
-    const prevTrack = () => { if(!library.length) return; if(currentIdx-1>=0) currentIdx--; else if(repeatAll) currentIdx=library.length-1; else return; isPlaying=true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); };
-    playBtn.addEventListener('click', togglePlay);
-    nextBtn.addEventListener('click', nextTrack);
-    prevBtn.addEventListener('click', prevTrack);
-    repeatAllBtn.addEventListener('click', () => { if(repeatOne) repeatOne=false; repeatAll=!repeatAll; refreshUI(); });
-    repeatOneBtn.addEventListener('click', () => { if(repeatAll) repeatAll=false; repeatOne=!repeatOne; refreshUI(); });
-
-    importBtn.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', (e) => { const files=Array.from(e.target.files); let newEntries=[]; files.forEach(f=>{ if(f.type.startsWith('audio/') || /\.(mp3|m4a|wav|ogg|mp4)$/i.test(f.name)){ const url=URL.createObjectURL(f); const name=f.name.replace(/\.[^/.]+$/,''); if(!library.some(s=>s.name===name)) newEntries.push({name,url}); } }); if(!newEntries.length) return; library.push(...newEntries); renderPlaylist(); if(library.length===newEntries.length){ currentIdx=0; isPlaying=true; loadTrack(0); audio.play().catch(e=>console.log(e)); ensureEqStarted(); } fileInput.value=''; });
-
+    function loadTrack(idx) { if(!library[idx]) return; const was = isPlaying; audio.src = library[idx].url; songTitleSpan.innerText = library[idx].name; audio.load(); if(was) audio.play().catch(e=>console.log(e)); refreshUI(); refreshPlaylistHighlight(); }
+    function refreshPlaylistHighlight() { const rows = document.querySelectorAll('.song-row'); rows.forEach((row, idx) => { if(idx===currentIdx && isPlaying) { row.classList.add('now-playing'); if(!row.querySelector('.playing-led')) { const led = document.createElement('span'); led.className = 'playing-led'; row.querySelector('.song-info')?.appendChild(led); } } else { row.classList.remove('now-playing'); const led = row.querySelector('.playing-led'); if(led) led.remove(); } }); updateCounter(); }
+    function updateTrackNumbers() { const rows = document.querySelectorAll('.song-row'); rows.forEach((row, idx) => { const numSpan = row.querySelector('.song-info span:first-child'); if(numSpan) numSpan.textContent = (idx+1).toString().padStart(2,'0'); row.setAttribute('data-index', idx); const up = row.querySelector('.move-up'); if(up) up.setAttribute('data-idx', idx); const down = row.querySelector('.move-down'); if(down) down.setAttribute('data-idx', idx); const del = row.querySelector('.delete-btn'); if(del) del.setAttribute('data-idx', idx); }); }
+    function moveSongDOM(from, to) { if(to<0 || to>=library.length) return; const was = isPlaying, curTime = audio.currentTime, curUrl = audio.src; const [moved] = library.splice(from,1); library.splice(to,0,moved); const rows = document.querySelectorAll('.song-row'); if(from<rows.length && to<rows.length) { if(from<to) rows[to].insertAdjacentElement('afterend', rows[from]); else rows[to].insertAdjacentElement('beforebegin', rows[from]); } if(currentIdx===from) currentIdx=to; else if(from<currentIdx && to>=currentIdx) currentIdx--; else if(from>currentIdx && to<=currentIdx) currentIdx++; updateTrackNumbers(); if(was && library[currentIdx]) { if(audio.src!==library[currentIdx].url) { audio.src = library[currentIdx].url; audio.currentTime = curTime; audio.load(); audio.play().catch(e=>console.log(e)); } else if(audio.currentTime!==curTime) audio.currentTime = curTime; } refreshPlaylistHighlight(); refreshUI(); }
+    function deleteSongDOM(idx) { if(idx<0 || idx>=library.length) return; const wasPlayingCurr = (idx===currentIdx && isPlaying), curTime=audio.currentTime, curUrl=audio.src; library.splice(idx,1); const rows=document.querySelectorAll('.song-row'); if(rows[idx]) rows[idx].remove(); if(library.length===0) { currentIdx=0; isPlaying=false; audio.pause(); audio.src=''; songTitleSpan.innerText='🎵 NO FILE'; refreshUI(); playlistDiv.innerHTML=`<div style="text-align:center; padding:30px; color:#cbd5e1;">🎵 No tracks<br>⬆️ import your files</div>`; return; } if(currentIdx>=library.length) currentIdx=library.length-1; if(idx<currentIdx) currentIdx--; if(wasPlayingCurr) { loadTrack(currentIdx); if(isPlaying) audio.play().catch(e=>console.log(e)); } else if(isPlaying && library[currentIdx]) { if(audio.src!==library[currentIdx].url) { audio.src=library[currentIdx].url; audio.currentTime=curTime; audio.load(); audio.play().catch(e=>console.log(e)); } } updateTrackNumbers(); refreshPlaylistHighlight(); refreshUI(); }
+    function renderPlaylist() { if(!library.length) { playlistDiv.innerHTML=`<div style="text-align:center; padding:30px; color:#cbd5e1;">🎵 No tracks<br>⬆️ import your files</div>`; return; } let html=''; library.forEach((t,idx)=>{ const activeClass=(idx===currentIdx && isPlaying)?'now-playing':''; html+=`<div class="song-row ${activeClass}" data-index="${idx}" tabindex="0"><div class="song-info"><span style="opacity:0.7; width:30px;">${(idx+1).toString().padStart(2,'0')}</span><span class="song-name">${escapeHtml(t.name)}</span>${ (idx===currentIdx && isPlaying)?'<span class="playing-led"></span>':'' }</div><div class="song-actions"><button class="move-up" data-action="up" data-idx="${idx}" tabindex="-1">⬆️</button><button class="move-down" data-action="down" data-idx="${idx}" tabindex="-1">⬇️</button><button class="delete-btn" data-action="delete" data-idx="${idx}" tabindex="-1">❌</button></div></div>`; }); playlistDiv.innerHTML=html; document.querySelectorAll('.move-up').forEach(btn=>{ btn.onclick=(e)=>{ e.stopPropagation(); const i=parseInt(btn.dataset.idx); if(i>0) moveSongDOM(i,i-1); }; }); document.querySelectorAll('.move-down').forEach(btn=>{ btn.onclick=(e)=>{ e.stopPropagation(); const i=parseInt(btn.dataset.idx); if(i<library.length-1) moveSongDOM(i,i+1); }; }); document.querySelectorAll('.delete-btn').forEach(btn=>{ btn.onclick=(e)=>{ e.stopPropagation(); const i=parseInt(btn.dataset.idx); deleteSongDOM(i); }; }); document.querySelectorAll('.song-info').forEach(info=>{ const parent=info.closest('.song-row'); info.onclick=()=>{ const idx=parseInt(parent.dataset.index); currentIdx=idx; isPlaying=true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); refreshUI(); }; }); }
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => m==='&'?'&amp;': m==='<'?'&lt;': m==='>'?'&gt;': m); }
+    audio.addEventListener('timeupdate',()=>{ if(audio.duration){ const p=(audio.currentTime/audio.duration)*100; progressSlider.value=p; progressFill.style.width=p+'%'; currentTimeSpan.innerText=formatTime(audio.currentTime); totalTimeSpan.innerText=formatTime(audio.duration); } });
+    progressSlider.oninput=()=>{ if(audio.duration) audio.currentTime=(progressSlider.value/100)*audio.duration; };
+    volumeCtrl.oninput=()=>{ currentVolume=volumeCtrl.value; audio.volume=currentVolume/100; volFill.style.width=currentVolume+'%'; volValue.innerText=currentVolume+'%'; };
+    audio.onended=()=>{ if(library.length===0) return; if(repeatOne){ loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); } else if(repeatAll){ currentIdx=(currentIdx+1)%library.length; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); } else { isPlaying=false; refreshUI(); refreshPlaylistHighlight(); } };
+    const togglePlay=()=>{ if(!library.length) return; if(isPlaying) audio.pause(); else { audio.play().catch(e=>console.log(e)); ensureEqStarted(); } isPlaying=!isPlaying; refreshUI(); refreshPlaylistHighlight(); };
+    const nextT=()=>{ if(!library.length) return; if(currentIdx+1<library.length) currentIdx++; else if(repeatAll) currentIdx=0; else return; isPlaying=true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); };
+    const prevT=()=>{ if(!library.length) return; if(currentIdx-1>=0) currentIdx--; else if(repeatAll) currentIdx=library.length-1; else return; isPlaying=true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); };
+    playBtn.onclick=togglePlay; nextBtn.onclick=nextT; prevBtn.onclick=prevT;
+    repeatAllBtn.onclick=()=>{ if(repeatOne) repeatOne=false; repeatAll=!repeatAll; refreshUI(); };
+    repeatOneBtn.onclick=()=>{ if(repeatAll) repeatAll=false; repeatOne=!repeatOne; refreshUI(); };
+    importBtn.onclick=()=>fileInput.click();
+    fileInput.onchange=e=>{ const files=Array.from(e.target.files); let newE=[]; files.forEach(f=>{ if(f.type.startsWith('audio/') || /\.(mp3|m4a|wav|ogg|mp4)$/i.test(f.name)){ const url=URL.createObjectURL(f); const name=f.name.replace(/\.[^/.]+$/,''); if(!library.some(s=>s.name===name)) newE.push({name,url}); } }); if(!newE.length) return; library.push(...newE); renderPlaylist(); if(library.length===newE.length){ currentIdx=0; isPlaying=true; loadTrack(0); audio.play().catch(e=>console.log(e)); ensureEqStarted(); } fileInput.value=''; });
     const themes = { green:{accent:'#10b981',dark:'#047857',glow:'#34d399',bgEnd:'#064e3b'}, purple:{accent:'#8b5cf6',dark:'#6d28d9',glow:'#a78bfa',bgEnd:'#4c1d95'}, blue:{accent:'#3b82f6',dark:'#1d4ed8',glow:'#60a5fa',bgEnd:'#1e3a8a'}, silver:{accent:'#94a3b8',dark:'#64748b',glow:'#cbd5e1',bgEnd:'#1e293b'}, amber:{accent:'#f59e0b',dark:'#b45309',glow:'#fbbf24',bgEnd:'#78350f'} };
-    const applyTheme = (themeName) => { const t=themes[themeName]; if(!t) return; document.documentElement.style.setProperty('--accent', t.accent); document.documentElement.style.setProperty('--accent-dark', t.dark); document.documentElement.style.setProperty('--accent-glow', t.glow); document.body.style.background = `linear-gradient(135deg, #0a0f1e 0%, ${t.bgEnd} 100%)`; document.querySelectorAll('.color-dot').forEach(dot=>{ if(dot.dataset.theme===themeName) dot.classList.add('active'); else dot.classList.remove('active'); }); };
-    document.querySelectorAll('.color-dot').forEach(dot=>{ dot.addEventListener('click',()=>applyTheme(dot.dataset.theme)); });
+    const applyTheme = (tn)=>{ const t=themes[tn]; if(!t) return; document.documentElement.style.setProperty('--accent', t.accent); document.documentElement.style.setProperty('--accent-dark', t.dark); document.documentElement.style.setProperty('--accent-glow', t.glow); document.body.style.background = `linear-gradient(135deg, #0a0f1e 0%, ${t.bgEnd} 100%)`; document.querySelectorAll('.color-dot').forEach(d=>{ if(d.dataset.theme===tn) d.classList.add('active'); else d.classList.remove('active'); }); };
+    document.querySelectorAll('.color-dot').forEach(d=>{ d.onclick=()=>applyTheme(d.dataset.theme); });
 
-    // MODALES
-    function openModal(modal) { modal.classList.add('active'); }
-    function closeModal(modal) { modal.classList.remove('active'); if(modal === mandalaModal) { stopMandala(); } }
-    eqLauncherBtn.addEventListener('click', () => { openModal(eqModal); drawSpectrumFromGains(filters.length ? filters.map(f=>f.gain.value) : [0,0,0,0,0]); });
-    mandalaLauncherBtn.addEventListener('click', () => { openModal(mandalaModal); if(audioContext && isPlaying) { initMandala(); } else { alert("Reproduce música primero para que el visualizador se mueva."); closeModal(mandalaModal); } });
-    closeEqBtn.addEventListener('click', () => closeModal(eqModal));
-    closeMandalaBtn.addEventListener('click', () => closeModal(mandalaModal));
-    eqModal.addEventListener('click', (e) => { if(e.target === eqModal) closeModal(eqModal); });
-    mandalaModal.addEventListener('click', (e) => { if(e.target === mandalaModal) closeModal(mandalaModal); });
-    eqPresetSelect.addEventListener('change', (e) => { currentPreset = e.target.value; applyEqPreset(currentPreset); });
-    resetEqBtn.addEventListener('click', () => { resetEqToFlat(); });
-    tipsBtn.addEventListener('click',()=>openModal(tipsModal));
-    closeModalBtn.addEventListener('click',()=>closeModal(tipsModal));
-    tipsModal.addEventListener('click',(e)=>{ if(e.target === tipsModal) closeModal(tipsModal); });
-    feedbackBtn.addEventListener('click',()=>{ window.open('mailto:rodrigooctavioalmanza@gmail.com?subject=Feedback%20PortaTune&body=Hola,%0A%0AQuiero%20compartir%20mi%20feedback%20sobre%20PortaTune:%0A%0A','_blank'); });
-    donateBtn.addEventListener('click',()=>{ window.open('https://ko-fi.com/portatune','_blank'); });
+    function openModal(modal) { modal.classList.add('active'); if(modal===mandalaModal && audioContext && isPlaying) initMandala(); }
+    function closeModal(modal) { modal.classList.remove('active'); if(modal===mandalaModal) stopMandala(); }
+    eqLauncherBtn.onclick=()=>{ openModal(eqModal); if(filters.length) drawSpectrumFromGains(filters.map(f=>f.gain.value)); else drawSpectrumFromGains([0,0,0,0,0]); };
+    mandalaLauncherBtn.onclick=()=>{ if(!audioContext || !isPlaying) { alert("Reproduce música primero para que el visualizador se mueva."); return; } openModal(mandalaModal); };
+    closeEqBtn.onclick=()=>closeModal(eqModal);
+    closeMandalaBtn.onclick=()=>closeModal(mandalaModal);
+    eqModal.onclick=(e)=>{ if(e.target===eqModal) closeModal(eqModal); };
+    mandalaModal.onclick=(e)=>{ if(e.target===mandalaModal) closeModal(mandalaModal); };
+    eqPresetSelect.onchange=e=>{ currentPreset=e.target.value; applyEqPreset(currentPreset); };
+    resetEqBtn.onclick=()=>{ resetEqToFlat(); };
+    tipsBtn.onclick=()=>openModal(tipsModal);
+    closeModalBtn.onclick=()=>closeModal(tipsModal);
+    tipsModal.onclick=e=>{ if(e.target===tipsModal) closeModal(tipsModal); };
+    feedbackBtn.onclick=()=>window.open('mailto:rodrigooctavioalmanza@gmail.com?subject=Feedback%20PortaTune&body=Hola,%0A%0AQuiero%20compartir%20mi%20feedback%20sobre%20PortaTune:%0A%0A','_blank');
+    donateBtn.onclick=()=>window.open('https://ko-fi.com/portatune','_blank');
 
-    audio.volume = currentVolume/100;
+    audio.volume=currentVolume/100;
     volFill.style.width=currentVolume+'%';
     volValue.innerText=currentVolume+'%';
     applyTheme('green');
@@ -968,7 +836,7 @@
     refreshUI();
     drawSpectrumFromGains([0,0,0,0,0]);
     resizeMandalaCanvas();
-    window.addEventListener('resize', () => { resizeMandalaCanvas(); if(mandalaModal.classList.contains('active')) initMandala(); });
+    window.onresize=()=>{ resizeMandalaCanvas(); if(mandalaModal.classList.contains('active')) initMandala(); };
 </script>
 </body>
 </html>
