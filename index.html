@@ -922,4 +922,37 @@
         if (!t) return;
         document.documentElement.style.setProperty('--accent', t.accent);
         document.documentElement.style.setProperty('--accent-dark', t.dark);
-        document.d
+        document.documentElement.style.setProperty('--accent-glow', t.glow);
+        document.body.style.background = `linear-gradient(135deg, #0a0f1e 0%, ${t.bgEnd} 100%)`;
+        document.querySelectorAll('.color-dot').forEach(dot => {
+            if (dot.dataset.theme === themeName) dot.classList.add('active');
+            else dot.classList.remove('active');
+        });
+        setTimeout(() => renderPlaylist(), 10); // refresca colores en botones de playlist
+    };
+
+    document.querySelectorAll('.color-dot').forEach(dot => {
+        dot.addEventListener('click', () => applyTheme(dot.dataset.theme));
+    });
+
+    tipsBtn.addEventListener('click', () => tipsModal.classList.add('active'));
+    closeModalBtn.addEventListener('click', () => tipsModal.classList.remove('active'));
+    tipsModal.addEventListener('click', (e) => { if (e.target === tipsModal) tipsModal.classList.remove('active'); });
+
+    feedbackBtn.addEventListener('click', () => {
+        window.open('mailto:rodrigooctavioalmanza@gmail.com?subject=Feedback%20PortaTune&body=Hola,%0A%0AQuiero%20compartir%20mi%20feedback%20sobre%20PortaTune:%0A%0A', '_blank');
+    });
+
+    donateBtn.addEventListener('click', () => {
+        window.open('https://ko-fi.com/portatune', '_blank');
+    });
+
+    audio.volume = currentVolume / 100;
+    volFill.style.width = currentVolume + '%';
+    volValue.innerText = currentVolume + '%';
+    applyTheme('green');
+    renderPlaylist();
+    refreshUI();
+</script>
+</body>
+</html>
