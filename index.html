@@ -7,7 +7,6 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="shortcut icon" href="favicon.ico">
     <style>
-        /* ========== RESET Y ESTILOS GLOBALES (sin cambios importantes) ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: linear-gradient(135deg, #0a0f1e 0%, #0a1a1a 100%);
@@ -280,7 +279,6 @@
         }
         .vol-fill { width: 70%; height: 100%; background: #cbd5e1; border-radius: 4px; }
         .vol-input { width: 100%; opacity: 0; position: absolute; cursor: pointer; }
-        /* MODALES */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -455,7 +453,7 @@
 
 <audio id="audioElement"></audio>
 
-<!-- MODAL EQ (MEJORADO VISUALMENTE) -->
+<!-- MODAL EQ -->
 <div id="eqModal" class="modal-overlay">
     <div class="modal-card">
         <div class="modal-header">
@@ -477,7 +475,7 @@
     </div>
 </div>
 
-<!-- MODAL MANDALA (MEJORADO: RESPETA SILENCIOS Y GIRA) -->
+<!-- MODAL MANDALA -->
 <div id="mandalaModal" class="modal-overlay">
     <div class="modal-card">
         <div class="modal-header">
@@ -545,7 +543,7 @@
     const spectrumCanvas = document.getElementById('spectrumCanvas');
     const mandalaCanvas = document.getElementById('mandalaCanvas');
     const fullscreenBtn = document.getElementById('fullscreenBtn');
-    const mandalaContainer = document.getElementById('mandalaContainer');
+    const mandalaContainerEl = document.getElementById('mandalaContainer');
     const ctxSpectrum = spectrumCanvas.getContext('2d');
     const ctxMandala = mandalaCanvas.getContext('2d');
 
@@ -571,7 +569,7 @@
     let rotationAngle = 0;
     let lastDirChange = 0;
 
-    // ========== 1. Ecualizador (mejora visual de las barras) ==========
+    // ========== 1. Ecualizador ==========
     function initEqualizer() {
         if (audioContext) return;
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -609,7 +607,6 @@
         drawSpectrumFromGains(gains);
     }
 
-    // Dibuja las barras con separación, borde redondeado y gradiente
     function drawSpectrumFromGains(gains) {
         if (!ctxSpectrum) return;
         const w = spectrumCanvas.clientWidth;
@@ -652,10 +649,9 @@
         }
     }
 
-    // ========== 2. Mandala: tamaño dinámico (incluso cero en silencio) y giro cambiante ==========
+    // ========== 2. Mandala ==========
     function resizeMandalaCanvas() {
-        const cont = mandalaContainer;
-        const w = cont.clientWidth;
+        const w = mandalaContainerEl.clientWidth;
         const h = 300;
         mandalaCanvas.width = w;
         mandalaCanvas.height = h;
@@ -711,7 +707,6 @@
             if (currentRadius < 2) currentRadius = 0;
             ctxMandala.clearRect(0, 0, w, h);
             if (currentRadius < 1) {
-                // Silencio total: fondo negro y nada más
                 ctxMandala.fillStyle = '#000000';
                 ctxMandala.fillRect(0, 0, w, h);
                 mandalaAnimationId = requestAnimationFrame(draw);
@@ -721,32 +716,29 @@
             ctxMandala.save();
             ctxMandala.translate(centerX, centerY);
             ctxMandala.rotate(rotationAngle);
-            // Anillos concéntricos
             for (let r = 1; r <= 3; r++) {
-                const ringRad = currentRadius * (0.3 + r * 0.25);
+                const ringRad = currentRadius * (0.25 + r * 0.25);
                 ctxMandala.beginPath();
                 ctxMandala.arc(0, 0, ringRad, 0, Math.PI * 2);
                 ctxMandala.strokeStyle = `hsla(${hue}, 85%, 65%, ${0.7 - r*0.15})`;
                 ctxMandala.lineWidth = 1.8;
                 ctxMandala.stroke();
             }
-            // Radios
             const numSpokes = Math.max(12, Math.floor(24 * intensity));
             for (let i = 0; i < numSpokes; i++) {
                 const ang = (i / numSpokes) * Math.PI * 2;
-                const x1 = Math.cos(ang) * currentRadius * 0.15;
-                const y1 = Math.sin(ang) * currentRadius * 0.15;
+                const x1 = Math.cos(ang) * currentRadius * 0.12;
+                const y1 = Math.sin(ang) * currentRadius * 0.12;
                 const x2 = Math.cos(ang) * currentRadius;
                 const y2 = Math.sin(ang) * currentRadius;
                 ctxMandala.beginPath();
                 ctxMandala.moveTo(x1, y1);
                 ctxMandala.lineTo(x2, y2);
-                ctxMandala.strokeStyle = `hsla(${hue + i*8}, 75%, 60%, 0.75)`;
+                ctxMandala.strokeStyle = `hsla(${hue + i*8}, 75%, 60%, 0.8)`;
                 ctxMandala.stroke();
             }
-            // Centro
             ctxMandala.beginPath();
-            ctxMandala.arc(0, 0, currentRadius * 0.12, 0, Math.PI * 2);
+            ctxMandala.arc(0, 0, currentRadius * 0.1, 0, Math.PI * 2);
             ctxMandala.fillStyle = `hsl(${hue}, 80%, 60%)`;
             ctxMandala.fill();
             ctxMandala.restore();
@@ -773,11 +765,11 @@
         if (el.requestFullscreen) el.requestFullscreen();
         else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
     }
-    fullscreenBtn.onclick = () => enterFullscreen(mandalaContainer);
+    fullscreenBtn.onclick = () => enterFullscreen(mandalaContainerEl);
     function handleFullscreen() {
-        if (document.fullscreenElement === mandalaContainer || document.webkitFullscreenElement === mandalaContainer) {
-            mandalaCanvas.width = mandalaContainer.clientWidth;
-            mandalaCanvas.height = mandalaContainer.clientHeight;
+        if (document.fullscreenElement === mandalaContainerEl || document.webkitFullscreenElement === mandalaContainerEl) {
+            mandalaCanvas.width = mandalaContainerEl.clientWidth;
+            mandalaCanvas.height = mandalaContainerEl.clientHeight;
         } else {
             resizeMandalaCanvas();
         }
@@ -785,7 +777,7 @@
     document.addEventListener('fullscreenchange', handleFullscreen);
     document.addEventListener('webkitfullscreenchange', handleFullscreen);
 
-    // ========== REPRODUCTOR (sin cambios funcionales, solo compatibilidad) ==========
+    // ========== 3. Reproductor y playlist (con importación funcionando) ==========
     function formatTime(sec) { if(isNaN(sec)) return '00:00'; const m=Math.floor(sec/60), s=Math.floor(sec%60); return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
     function updateCounter() { if(!library.length) trackCounterSpan.innerText = `TRACK 00/00`; else trackCounterSpan.innerText = `TRACK ${(currentIdx+1).toString().padStart(2,'0')}/${library.length.toString().padStart(2,'0')}`; }
     function refreshUI() { if(library[currentIdx]) songTitleSpan.innerText = library[currentIdx].name; else songTitleSpan.innerText = '🎵 NO FILE'; playBtn.innerText = isPlaying ? '⏸ PAUSE' : '▶ PLAY'; updateCounter(); if(repeatAll) repeatAllBtn.classList.add('active'); else repeatAllBtn.classList.remove('active'); if(repeatOne) repeatOneBtn.classList.add('active'); else repeatOneBtn.classList.remove('active'); }
@@ -793,21 +785,51 @@
     function refreshPlaylistHighlight() { const rows = document.querySelectorAll('.song-row'); rows.forEach((row, idx) => { if(idx===currentIdx && isPlaying) { row.classList.add('now-playing'); if(!row.querySelector('.playing-led')) { const led = document.createElement('span'); led.className = 'playing-led'; row.querySelector('.song-info')?.appendChild(led); } } else { row.classList.remove('now-playing'); const led = row.querySelector('.playing-led'); if(led) led.remove(); } }); updateCounter(); }
     function updateTrackNumbers() { const rows = document.querySelectorAll('.song-row'); rows.forEach((row, idx) => { const numSpan = row.querySelector('.song-info span:first-child'); if(numSpan) numSpan.textContent = (idx+1).toString().padStart(2,'0'); row.setAttribute('data-index', idx); const up = row.querySelector('.move-up'); if(up) up.setAttribute('data-idx', idx); const down = row.querySelector('.move-down'); if(down) down.setAttribute('data-idx', idx); const del = row.querySelector('.delete-btn'); if(del) del.setAttribute('data-idx', idx); }); }
     function moveSongDOM(from, to) { if(to<0 || to>=library.length) return; const was = isPlaying, curTime = audio.currentTime, curUrl = audio.src; const [moved] = library.splice(from,1); library.splice(to,0,moved); const rows = document.querySelectorAll('.song-row'); if(from<rows.length && to<rows.length) { if(from<to) rows[to].insertAdjacentElement('afterend', rows[from]); else rows[to].insertAdjacentElement('beforebegin', rows[from]); } if(currentIdx===from) currentIdx=to; else if(from<currentIdx && to>=currentIdx) currentIdx--; else if(from>currentIdx && to<=currentIdx) currentIdx++; updateTrackNumbers(); if(was && library[currentIdx]) { if(audio.src!==library[currentIdx].url) { audio.src = library[currentIdx].url; audio.currentTime = curTime; audio.load(); audio.play().catch(e=>console.log(e)); } else if(audio.currentTime!==curTime) audio.currentTime = curTime; } refreshPlaylistHighlight(); refreshUI(); }
-    function deleteSongDOM(idx) { if(idx<0 || idx>=library.length) return; const wasPlayingCurr = (idx===currentIdx && isPlaying), curTime=audio.currentTime, curUrl=audio.src; library.splice(idx,1); const rows=document.querySelectorAll('.song-row'); if(rows[idx]) rows[idx].remove(); if(library.length===0) { currentIdx=0; isPlaying=false; audio.pause(); audio.src=''; songTitleSpan.innerText='🎵 NO FILE'; refreshUI(); playlistDiv.innerHTML=`<div style="text-align:center; padding:30px; color:#cbd5e1;">🎵 No tracks<br>⬆️ import your files</div>`; return; } if(currentIdx>=library.length) currentIdx=library.length-1; if(idx<currentIdx) currentIdx--; if(wasPlayingCurr) { loadTrack(currentIdx); if(isPlaying) audio.play().catch(e=>console.log(e)); } else if(isPlaying && library[currentIdx]) { if(audio.src!==library[currentIdx].url) { audio.src=library[currentIdx].url; audio.currentTime=curTime; audio.load(); audio.play().catch(e=>console.log(e)); } } updateTrackNumbers(); refreshPlaylistHighlight(); refreshUI(); }
+    function deleteSongDOM(idx) { if(idx<0 || idx>=library.length) return; const wasPlayingCurr = (idx===currentIdx && isPlaying), curTime=audio.currentTime; library.splice(idx,1); const rows=document.querySelectorAll('.song-row'); if(rows[idx]) rows[idx].remove(); if(library.length===0) { currentIdx=0; isPlaying=false; audio.pause(); audio.src=''; songTitleSpan.innerText='🎵 NO FILE'; refreshUI(); playlistDiv.innerHTML=`<div style="text-align:center; padding:30px; color:#cbd5e1;">🎵 No tracks<br>⬆️ import your files</div>`; return; } if(currentIdx>=library.length) currentIdx=library.length-1; if(idx<currentIdx) currentIdx--; if(wasPlayingCurr) { loadTrack(currentIdx); if(isPlaying) audio.play().catch(e=>console.log(e)); } else if(isPlaying && library[currentIdx]) { if(audio.src!==library[currentIdx].url) { audio.src=library[currentIdx].url; audio.currentTime=curTime; audio.load(); audio.play().catch(e=>console.log(e)); } } updateTrackNumbers(); refreshPlaylistHighlight(); refreshUI(); }
     function renderPlaylist() { if(!library.length) { playlistDiv.innerHTML=`<div style="text-align:center; padding:30px; color:#cbd5e1;">🎵 No tracks<br>⬆️ import your files</div>`; return; } let html=''; library.forEach((t,idx)=>{ const activeClass=(idx===currentIdx && isPlaying)?'now-playing':''; html+=`<div class="song-row ${activeClass}" data-index="${idx}" tabindex="0"><div class="song-info"><span style="opacity:0.7; width:30px;">${(idx+1).toString().padStart(2,'0')}</span><span class="song-name">${escapeHtml(t.name)}</span>${ (idx===currentIdx && isPlaying)?'<span class="playing-led"></span>':'' }</div><div class="song-actions"><button class="move-up" data-action="up" data-idx="${idx}" tabindex="-1">⬆️</button><button class="move-down" data-action="down" data-idx="${idx}" tabindex="-1">⬇️</button><button class="delete-btn" data-action="delete" data-idx="${idx}" tabindex="-1">❌</button></div></div>`; }); playlistDiv.innerHTML=html; document.querySelectorAll('.move-up').forEach(btn=>{ btn.onclick=(e)=>{ e.stopPropagation(); const i=parseInt(btn.dataset.idx); if(i>0) moveSongDOM(i,i-1); }; }); document.querySelectorAll('.move-down').forEach(btn=>{ btn.onclick=(e)=>{ e.stopPropagation(); const i=parseInt(btn.dataset.idx); if(i<library.length-1) moveSongDOM(i,i+1); }; }); document.querySelectorAll('.delete-btn').forEach(btn=>{ btn.onclick=(e)=>{ e.stopPropagation(); const i=parseInt(btn.dataset.idx); deleteSongDOM(i); }; }); document.querySelectorAll('.song-info').forEach(info=>{ const parent=info.closest('.song-row'); info.onclick=()=>{ const idx=parseInt(parent.dataset.index); currentIdx=idx; isPlaying=true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); refreshUI(); }; }); }
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => m==='&'?'&amp;': m==='<'?'&lt;': m==='>'?'&gt;': m); }
+
+    // ========== Eventos de audio ==========
     audio.addEventListener('timeupdate',()=>{ if(audio.duration){ const p=(audio.currentTime/audio.duration)*100; progressSlider.value=p; progressFill.style.width=p+'%'; currentTimeSpan.innerText=formatTime(audio.currentTime); totalTimeSpan.innerText=formatTime(audio.duration); } });
     progressSlider.oninput=()=>{ if(audio.duration) audio.currentTime=(progressSlider.value/100)*audio.duration; };
     volumeCtrl.oninput=()=>{ currentVolume=volumeCtrl.value; audio.volume=currentVolume/100; volFill.style.width=currentVolume+'%'; volValue.innerText=currentVolume+'%'; };
     audio.onended=()=>{ if(library.length===0) return; if(repeatOne){ loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); } else if(repeatAll){ currentIdx=(currentIdx+1)%library.length; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); } else { isPlaying=false; refreshUI(); refreshPlaylistHighlight(); } };
+
     const togglePlay=()=>{ if(!library.length) return; if(isPlaying) audio.pause(); else { audio.play().catch(e=>console.log(e)); ensureEqStarted(); } isPlaying=!isPlaying; refreshUI(); refreshPlaylistHighlight(); };
     const nextT=()=>{ if(!library.length) return; if(currentIdx+1<library.length) currentIdx++; else if(repeatAll) currentIdx=0; else return; isPlaying=true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); };
     const prevT=()=>{ if(!library.length) return; if(currentIdx-1>=0) currentIdx--; else if(repeatAll) currentIdx=library.length-1; else return; isPlaying=true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); };
     playBtn.onclick=togglePlay; nextBtn.onclick=nextT; prevBtn.onclick=prevT;
     repeatAllBtn.onclick=()=>{ if(repeatOne) repeatOne=false; repeatAll=!repeatAll; refreshUI(); };
     repeatOneBtn.onclick=()=>{ if(repeatAll) repeatAll=false; repeatOne=!repeatOne; refreshUI(); };
-    importBtn.onclick=()=>fileInput.click();
-    fileInput.onchange=e=>{ const files=Array.from(e.target.files); let newE=[]; files.forEach(f=>{ if(f.type.startsWith('audio/') || /\.(mp3|m4a|wav|ogg|mp4)$/i.test(f.name)){ const url=URL.createObjectURL(f); const name=f.name.replace(/\.[^/.]+$/,''); if(!library.some(s=>s.name===name)) newE.push({name,url}); } }); if(!newE.length) return; library.push(...newE); renderPlaylist(); if(library.length===newE.length){ currentIdx=0; isPlaying=true; loadTrack(0); audio.play().catch(e=>console.log(e)); ensureEqStarted(); } fileInput.value=''; });
+
+    // ========== Importar archivos (¡arreglado!) ==========
+    importBtn.onclick = () => { fileInput.click(); };
+    fileInput.onchange = (e) => {
+        const files = Array.from(e.target.files);
+        let newEntries = [];
+        files.forEach(f => {
+            if (f.type.startsWith('audio/') || /\.(mp3|m4a|wav|ogg|mp4)$/i.test(f.name)) {
+                const url = URL.createObjectURL(f);
+                const name = f.name.replace(/\.[^/.]+$/, '');
+                if (!library.some(s => s.name === name)) {
+                    newEntries.push({ name, url });
+                }
+            }
+        });
+        if (newEntries.length === 0) return;
+        library.push(...newEntries);
+        renderPlaylist();
+        if (library.length === newEntries.length) {
+            currentIdx = 0;
+            isPlaying = true;
+            loadTrack(0);
+            audio.play().catch(e => console.log(e));
+            ensureEqStarted();
+        }
+        fileInput.value = '';
+    };
+
+    // ========== Temas y modales ==========
     const themes = { green:{accent:'#10b981',dark:'#047857',glow:'#34d399',bgEnd:'#064e3b'}, purple:{accent:'#8b5cf6',dark:'#6d28d9',glow:'#a78bfa',bgEnd:'#4c1d95'}, blue:{accent:'#3b82f6',dark:'#1d4ed8',glow:'#60a5fa',bgEnd:'#1e3a8a'}, silver:{accent:'#94a3b8',dark:'#64748b',glow:'#cbd5e1',bgEnd:'#1e293b'}, amber:{accent:'#f59e0b',dark:'#b45309',glow:'#fbbf24',bgEnd:'#78350f'} };
     const applyTheme = (tn)=>{ const t=themes[tn]; if(!t) return; document.documentElement.style.setProperty('--accent', t.accent); document.documentElement.style.setProperty('--accent-dark', t.dark); document.documentElement.style.setProperty('--accent-glow', t.glow); document.body.style.background = `linear-gradient(135deg, #0a0f1e 0%, ${t.bgEnd} 100%)`; document.querySelectorAll('.color-dot').forEach(d=>{ if(d.dataset.theme===tn) d.classList.add('active'); else d.classList.remove('active'); }); };
     document.querySelectorAll('.color-dot').forEach(d=>{ d.onclick=()=>applyTheme(d.dataset.theme); });
