@@ -256,7 +256,7 @@
             background: #0f172a;
             transition: 0.1s;
             flex-wrap: wrap;
-            color: #f1f5f9;
+            color: #d1d5db;
             border: 1px solid transparent;
         }
         .song-row.now-playing {
@@ -579,7 +579,6 @@
     document.addEventListener('keydown', (e) => {
         if (tipsModal.classList.contains('active')) return;
 
-        // Flechas izquierda / derecha para botones principales
         if (e.key === 'ArrowLeft') {
             e.preventDefault();
             keyboardActive = true;
@@ -589,7 +588,6 @@
             keyboardActive = true;
             focusButton(currentFocusIndex + 1);
         }
-        // Flechas arriba / abajo para navegar playlist
         else if (e.key === 'ArrowDown') {
             e.preventDefault();
             if (library.length > 0) {
@@ -644,7 +642,6 @@
             items[currentPlaylistIndex]?.focus();
         }
     }
-
     // ----- Fin navegación teclado -----
 
     const formatTime = (sec) => {
@@ -928,7 +925,7 @@
             if (dot.dataset.theme === themeName) dot.classList.add('active');
             else dot.classList.remove('active');
         });
-        setTimeout(() => renderPlaylist(), 10); // refresca colores en botones de playlist
+        setTimeout(() => renderPlaylist(), 10);
     };
 
     document.querySelectorAll('.color-dot').forEach(dot => {
