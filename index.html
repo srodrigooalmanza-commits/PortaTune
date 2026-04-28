@@ -9,11 +9,7 @@
     <link rel="shortcut icon" href="favicon.ico">
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background: linear-gradient(135deg, #0a0f1e 0%, #0a1a1a 100%);
@@ -29,11 +25,7 @@
             --accent-glow: #34d399;
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
+        .container { max-width: 1100px; margin: 0 auto; }
         .player-card {
             background: linear-gradient(145deg, #111827 0%, #030712 100%);
             border-radius: 48px;
@@ -50,41 +42,12 @@
             flex-wrap: wrap;
             gap: 15px;
         }
-
-        .brand {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .brand h1 {
-            font-size: 9px;
-            color: #6b7280;
-            letter-spacing: 3px;
-            margin-bottom: 4px;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .brand-img {
-            height: 32px;
-            width: auto;
-            display: inline-block;
-        }
-
-        .brand-text {
-            font-size: 22px;
-            font-weight: bold;
-            color: var(--accent);
-            transition: color 0.2s;
-        }
-
-        .brand-text span {
-            font-weight: 300;
-        }
+        .brand { display: flex; flex-direction: column; }
+        .brand h1 { font-size: 9px; color: #6b7280; letter-spacing: 3px; margin-bottom: 4px; }
+        .logo-container { display: flex; align-items: center; gap: 10px; }
+        .brand-img { height: 32px; width: auto; }
+        .brand-text { font-size: 22px; font-weight: bold; color: var(--accent); transition: color 0.2s; }
+        .brand-text span { font-weight: 300; }
 
         .color-palette {
             display: flex;
@@ -94,7 +57,6 @@
             border-radius: 40px;
             backdrop-filter: blur(4px);
         }
-
         .color-dot {
             width: 18px;
             height: 18px;
@@ -103,16 +65,10 @@
             border: 1.5px solid rgba(255,255,255,0.2);
             transition: all 0.2s ease;
         }
-
         .color-dot:hover { transform: scale(1.15); border-color: rgba(255,255,255,0.8); }
         .color-dot.active { border-color: white; box-shadow: 0 0 6px currentColor; transform: scale(1.05); }
 
-        .two-columns {
-            display: flex;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
-
+        .two-columns { display: flex; gap: 40px; flex-wrap: wrap; }
         .left-col { flex: 1.2; min-width: 280px; }
         .lcd {
             background: #000000cc;
@@ -123,191 +79,38 @@
             border: 1px solid #374151;
             box-shadow: inset 0 0 30px rgba(0,0,0,0.6), 0 6px 12px rgba(0,0,0,0.4);
         }
-        .lcd-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 32px;
-        }
-        .lcd-header span {
-            font-size: 9px;
-            letter-spacing: 2px;
-            color: var(--accent);
-            opacity: 0.6;
-        }
-
-        .song-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--accent-glow);
-            margin-bottom: 8px;
-            word-break: break-word;
-            text-shadow: 0 0 6px var(--accent);
-        }
-        .song-artist {
-            font-size: 10px;
-            color: var(--accent);
-            opacity: 0.6;
-            letter-spacing: 1px;
-        }
-
+        .lcd-header { display: flex; justify-content: space-between; margin-bottom: 32px; }
+        .lcd-header span { font-size: 9px; letter-spacing: 2px; color: var(--accent); opacity: 0.6; }
+        .song-title { font-size: 24px; font-weight: bold; color: var(--accent-glow); margin-bottom: 8px; word-break: break-word; text-shadow: 0 0 6px var(--accent); }
+        .song-artist { font-size: 10px; color: var(--accent); opacity: 0.6; letter-spacing: 1px; }
         .progress-area { margin-top: 40px; }
-        .time-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 9px;
-            color: var(--accent);
-            opacity: 0.6;
-            margin-bottom: 8px;
-        }
-        .progress-track {
-            background: #1e293b;
-            height: 3px;
-            border-radius: 4px;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        .progress-fill {
-            background: var(--accent);
-            width: 0%;
-            height: 100%;
-            box-shadow: 0 0 6px var(--accent);
-            transition: width 0.05s linear;
-        }
-        input[type="range"] {
-            width: 100%;
-            opacity: 0;
-            height: 3px;
-            position: absolute;
-            top: 0;
-            cursor: pointer;
-        }
+        .time-info { display: flex; justify-content: space-between; font-size: 9px; color: var(--accent); opacity: 0.6; margin-bottom: 8px; }
+        .progress-track { background: #1e293b; height: 3px; border-radius: 4px; position: relative; overflow: hidden; cursor: pointer; }
+        .progress-fill { background: var(--accent); width: 0%; height: 100%; box-shadow: 0 0 6px var(--accent); transition: width 0.05s linear; }
+        input[type="range"] { width: 100%; opacity: 0; height: 3px; position: absolute; top: 0; cursor: pointer; }
 
-        /* Botón EQ que abre modal */
-        .eq-launcher {
-            background: var(--accent);
-            border: none;
-            font-size: 14px;
-            font-weight: bold;
-            padding: 8px 16px;
-            border-radius: 40px;
-            cursor: pointer;
-            color: #030712;
-            font-family: monospace;
-            margin-bottom: 20px;
-            width: 100%;
-            transition: 0.1s;
-            box-shadow: 0 0 6px var(--accent);
-        }
-        .eq-launcher:active { transform: scale(0.97); }
-
-        /* Modal EQ */
-        .eq-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000000dd;
-            backdrop-filter: blur(8px);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-        .eq-modal.active { display: flex; }
-        .eq-modal-content {
-            background: #111827;
-            border-radius: 48px;
-            padding: 24px;
-            width: 90%;
-            max-width: 500px;
-            border: 1px solid var(--accent);
-            box-shadow: 0 30px 40px rgba(0,0,0,0.5);
-        }
-        .eq-modal-header {
+        /* Botones de herramientas */
+        .tool-buttons {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            gap: 12px;
             margin-bottom: 20px;
         }
-        .eq-modal-header h3 {
-            color: var(--accent-glow);
-            font-size: 18px;
-        }
-        .close-eq {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #cbd5e1;
-        }
-        .spectrum-canvas {
-            background: #0f172a;
-            border-radius: 20px;
-            width: 100%;
-            height: 100px;
-            margin-bottom: 20px;
-        }
-        .eq-preset-select {
-            width: 100%;
-            padding: 10px;
+        .tool-btn {
+            flex: 1;
             background: #1e293b;
-            border: 1px solid #334155;
+            border: none;
+            padding: 10px 12px;
             border-radius: 40px;
             color: #e2e8f0;
             font-family: monospace;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .eq-bands {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .eq-band-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .eq-band-row label {
-            width: 55px;
-            font-size: 12px;
-            color: #94a3b8;
-        }
-        .eq-band-row input {
-            flex: 1;
-            height: 4px;
-            -webkit-appearance: none;
-            background: #334155;
-            border-radius: 4px;
-        }
-        .eq-band-row input::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
-            background: var(--accent);
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        .eq-band-row span {
-            width: 35px;
-            font-size: 11px;
-            text-align: right;
-            color: #cbd5e1;
-        }
-        .eq-reset {
-            background: #1e293b;
-            border: none;
-            padding: 8px;
-            border-radius: 40px;
-            color: #cbd5e1;
-            font-family: monospace;
             font-weight: bold;
-            width: 100%;
+            font-size: 13px;
             cursor: pointer;
+            transition: 0.1s;
+            text-align: center;
         }
+        .tool-btn:active { transform: scale(0.97); }
+        .tool-btn.eq-btn { background: var(--accent); color: #030712; box-shadow: 0 0 6px var(--accent); }
 
         .transport {
             display: flex;
@@ -347,10 +150,7 @@
             color: #6b7280;
             transition: 0.1s linear;
         }
-        .loop-btn.active {
-            color: var(--accent);
-            box-shadow: 0 0 6px var(--accent);
-        }
+        .loop-btn.active { color: var(--accent); box-shadow: 0 0 6px var(--accent); }
 
         .right-col { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 18px; }
         .playlist-box {
@@ -431,12 +231,8 @@
             transition: 0.1s;
             color: #cbd5e1;
         }
-        .song-actions button:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        .song-actions .delete-btn:hover {
-            color: #ef4444;
-        }
+        .song-actions button:hover { background: rgba(255,255,255,0.2); }
+        .song-actions .delete-btn:hover { color: #ef4444; }
         .playing-led {
             width: 6px;
             height: 6px;
@@ -445,13 +241,8 @@
             animation: pulse 1s infinite;
             flex-shrink: 0;
         }
-        .now-playing .playing-led {
-            background: #030712;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1);}
-            50% { opacity: 0.4; transform: scale(0.8);}
-        }
+        .now-playing .playing-led { background: #030712; }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.8);} }
 
         .import-btn {
             background: var(--accent);
@@ -463,7 +254,6 @@
             font-family: monospace;
             font-size: 13px;
             cursor: pointer;
-            transition: 0.1s linear;
         }
         .action-row {
             display: flex;
@@ -477,11 +267,10 @@
             padding: 10px;
             border-radius: 36px;
             color: #e2e8f0;
-            font-weight: bold;
             font-family: monospace;
             font-size: 11px;
+            font-weight: bold;
             cursor: pointer;
-            transition: 0.1s linear;
             text-align: center;
         }
         .action-btn:active { transform: scale(0.97); }
@@ -505,37 +294,79 @@
         .vol-fill { width: 70%; height: 100%; background: #cbd5e1; border-radius: 4px; }
         .vol-input { width: 100%; opacity: 0; position: absolute; cursor: pointer; }
 
-        .modal-tips {
+        /* MODALES */
+        .modal-overlay {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000000cc;
+            background: #000000dd;
             backdrop-filter: blur(8px);
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 2000;
         }
-        .modal-tips.active { display: flex; }
+        .modal-overlay.active { display: flex; }
         .modal-card {
             background: #111827;
-            border-radius: 40px;
-            padding: 28px;
-            max-width: 340px;
+            border-radius: 48px;
+            padding: 24px;
             width: 90%;
+            max-width: 500px;
             border: 1px solid var(--accent);
+            box-shadow: 0 30px 40px rgba(0,0,0,0.5);
         }
-        .modal-card button {
-            background: var(--accent);
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal-header h3 { color: var(--accent-glow); font-size: 18px; }
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #cbd5e1;
+        }
+        .eq-preset-select {
             width: 100%;
             padding: 10px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 40px;
+            color: #e2e8f0;
+            font-family: monospace;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .reset-eq {
+            background: #1e293b;
             border: none;
-            border-radius: 50px;
+            padding: 8px;
+            border-radius: 40px;
+            color: #cbd5e1;
+            font-family: monospace;
             font-weight: bold;
-            margin-top: 20px;
+            width: 100%;
             cursor: pointer;
+        }
+        .spectrum-canvas {
+            background: #0f172a;
+            border-radius: 20px;
+            width: 100%;
+            height: 120px;
+            margin-bottom: 20px;
+        }
+        .mandala-canvas {
+            width: 100%;
+            height: 300px;
+            margin-bottom: 20px;
+            background: #00000022;
+            border-radius: 50%;
         }
 
         @media (max-width: 700px) {
@@ -548,7 +379,7 @@
             .brand-text { font-size: 18px; }
             .song-actions button { width: 32px; height: 32px; font-size: 16px; }
             .song-name { font-size: 11px; }
-            .eq-band-row label { width: 50px; font-size: 10px; }
+            .tool-btn { font-size: 11px; padding: 8px; }
         }
     </style>
 </head>
@@ -588,8 +419,10 @@
                     </div>
                 </div>
 
-                <!-- Botón que abre el modal (menos intrusivo) -->
-                <button id="eqLauncherBtn" class="eq-launcher">🎛️ ECUALIZADOR</button>
+                <div class="tool-buttons">
+                    <button id="eqLauncherBtn" class="tool-btn eq-btn">🎛️ EQ</button>
+                    <button id="mandalaLauncherBtn" class="tool-btn">🌀 VISUALIZADOR</button>
+                </div>
 
                 <div class="transport" id="transportBar">
                     <button id="prevBtn" class="transport-btn" tabindex="0">⏮</button>
@@ -625,14 +458,14 @@
 
 <audio id="audioElement"></audio>
 
-<!-- MODAL EQ (flotante, mobile friendly) -->
-<div id="eqModal" class="eq-modal">
-    <div class="eq-modal-content">
-        <div class="eq-modal-header">
-            <h3>🎛️ ECUALIZADOR GRÁFICO</h3>
-            <button id="closeEqBtn" class="close-eq">✕</button>
+<!-- MODAL EQ (solo presets, sin sliders individuales) -->
+<div id="eqModal" class="modal-overlay">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>🎛️ ECUALIZADOR</h3>
+            <button class="close-modal close-eq">✕</button>
         </div>
-        <canvas id="spectrumCanvas" class="spectrum-canvas" width="400" height="100"></canvas>
+        <canvas id="spectrumCanvas" class="spectrum-canvas" width="400" height="120"></canvas>
         <select id="eqPresetSelect" class="eq-preset-select">
             <option value="flat">Flat (sin ecualización)</option>
             <option value="rock">Rock</option>
@@ -643,36 +476,41 @@
             <option value="hiz">Hi‑Z (agudos realzados)</option>
             <option value="noise">Noise Reduction</option>
         </select>
-        <div class="eq-bands">
-            <div class="eq-band-row"><label>60 Hz</label><input type="range" id="eq60" min="-12" max="12" value="0" step="1"><span id="eq60val">0</span></div>
-            <div class="eq-band-row"><label>250 Hz</label><input type="range" id="eq250" min="-12" max="12" value="0" step="1"><span id="eq250val">0</span></div>
-            <div class="eq-band-row"><label>1 kHz</label><input type="range" id="eq1k" min="-12" max="12" value="0" step="1"><span id="eq1kval">0</span></div>
-            <div class="eq-band-row"><label>4 kHz</label><input type="range" id="eq4k" min="-12" max="12" value="0" step="1"><span id="eq4kval">0</span></div>
-            <div class="eq-band-row"><label>12 kHz</label><input type="range" id="eq12k" min="-12" max="12" value="0" step="1"><span id="eq12kval">0</span></div>
-        </div>
-        <button id="resetEqBtn" class="eq-reset">Restablecer (Flat)</button>
+        <button id="resetEqBtn" class="reset-eq">Restablecer (Flat)</button>
     </div>
 </div>
 
-<div id="tipsModal" class="modal-tips">
+<!-- MODAL MANDALA (analizador de frecuencias visual) -->
+<div id="mandalaModal" class="modal-overlay">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>🌀 VISUALIZADOR MANDALA</h3>
+            <button class="close-modal close-mandala">✕</button>
+        </div>
+        <canvas id="mandalaCanvas" class="mandala-canvas" width="400" height="400"></canvas>
+        <div style="text-align:center; margin-top: 8px; font-size: 10px; color: #6b7280;">se mueve con la música</div>
+    </div>
+</div>
+
+<div id="tipsModal" class="modal-overlay">
     <div class="modal-card">
         <h3 style="color:var(--accent); margin-bottom:16px;">🎧 GUIDE · PORTATUNE</h3>
-        <ul style="color:#cbd5e1; font-size:12px; line-height:1.6; padding-left:18px;">
+        <ul style="color:#cbd5e1; font-size:12px; line-height:1.6; padding-left:20px;">
             <li><strong>1️⃣ SAVE FILES FIRST</strong><br>Download audio to your device. From WhatsApp: tap & hold → "Save to Files".</li>
-            <li><strong>2️⃣ IMPORT</strong><br>Click "IMPORT LOCAL MUSIC" and select your files (multiple at once).</li>
-            <li><strong>3️⃣ LOOP MODES</strong><br>🔁 Repeat all playlist. 🔂 Repeat one song. No loop = stops after each track.</li>
-            <li><strong>🎛️ EQ</strong><br>Press "ECUALIZADOR" to open graphic equalizer (5 bands + presets).</li>
-            <li><strong>🎨 COLORS</strong><br>Use the small circles (top right) to change the interface theme.</li>
-            <li><strong>📱 ADD TO HOME SCREEN</strong><br>Share menu → "Add to Home Screen" → standalone app.</li>
-            <li><strong>📝 MANAGE PLAYLIST</strong><br>Use ↑ ↓ to reorder tracks. Click ❌ to remove a song.</li>
-            <li><strong>⌨️ KEYBOARD</strong><br>← → move between buttons. ↑ ↓ navigate playlist. Enter to play.</li>
+            <li><strong>2️⃣ IMPORT</strong><br>Click "IMPORT LOCAL MUSIC".</li>
+            <li><strong>3️⃣ LOOP MODES</strong><br>🔁 Repeat all. 🔂 Repeat one. No loop = stops after each track.</li>
+            <li><strong>🎛️ EQ</strong><br>Open EQ modal to choose presets (Rock, Pop, Voice...).</li>
+            <li><strong>🌀 VISUALIZER</strong><br>Open Mandala, it dances with the music.</li>
+            <li><strong>🎨 COLORS</strong><br>Use top‑right circles to change theme.</li>
+            <li><strong>📱 ADD TO HOME SCREEN</strong><br>Share menu → "Add to Home Screen".</li>
+            <li><strong>⌨️ KEYBOARD</strong><br>← → between buttons. ↑ ↓ playlist. Enter to play.</li>
         </ul>
         <button id="closeModalBtn">CLOSE</button>
     </div>
 </div>
 
 <script>
-    // Elementos DOM principales
+    // ========== DOM elements ==========
     const audio = document.getElementById('audioElement');
     const playBtn = document.getElementById('playBtn');
     const prevBtn = document.getElementById('prevBtn');
@@ -696,31 +534,20 @@
     const tipsModal = document.getElementById('tipsModal');
     const repeatAllBtn = document.getElementById('repeatAllBtn');
     const repeatOneBtn = document.getElementById('repeatOneBtn');
-
-    // EQ elementos
     const eqLauncherBtn = document.getElementById('eqLauncherBtn');
+    const mandalaLauncherBtn = document.getElementById('mandalaLauncherBtn');
     const eqModal = document.getElementById('eqModal');
-    const closeEqBtn = document.getElementById('closeEqBtn');
+    const mandalaModal = document.getElementById('mandalaModal');
+    const closeEqBtn = document.querySelector('.close-eq');
+    const closeMandalaBtn = document.querySelector('.close-mandala');
     const eqPresetSelect = document.getElementById('eqPresetSelect');
     const resetEqBtn = document.getElementById('resetEqBtn');
-    const eqSliders = {
-        eq60: document.getElementById('eq60'), eq250: document.getElementById('eq250'),
-        eq1k: document.getElementById('eq1k'), eq4k: document.getElementById('eq4k'),
-        eq12k: document.getElementById('eq12k')
-    };
-    const eqValues = {
-        eq60val: document.getElementById('eq60val'), eq250val: document.getElementById('eq250val'),
-        eq1kval: document.getElementById('eq1kval'), eq4kval: document.getElementById('eq4kval'),
-        eq12kval: document.getElementById('eq12kval')
-    };
     const spectrumCanvas = document.getElementById('spectrumCanvas');
-    const ctx = spectrumCanvas.getContext('2d');
-    let audioContext = null;
-    let sourceNode = null;
-    let filters = [];
-    let eqInitialized = false;
+    const mandalaCanvas = document.getElementById('mandalaCanvas');
+    const ctxSpectrum = spectrumCanvas.getContext('2d');
+    const ctxMandala = mandalaCanvas.getContext('2d');
 
-    // Estado de la app
+    // Estado
     let library = [];
     let currentIdx = 0;
     let isPlaying = false;
@@ -728,7 +555,18 @@
     let repeatAll = false;
     let repeatOne = false;
 
-    // ========== Ecualizador ==========
+    // Web Audio EQ
+    let audioContext = null;
+    let sourceNode = null;
+    let filters = [];
+    let eqInitialized = false;
+    let currentPreset = 'flat';
+
+    // Analizador para el mandala
+    let analyser = null;
+    let mandalaAnimationId = null;
+
+    // ========== Ecualizador (solo presets) ==========
     function initEqualizer() {
         if (audioContext) return;
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -745,32 +583,12 @@
         let prev = sourceNode;
         filters.forEach(f => { prev.connect(f); prev = f; });
         prev.connect(audioContext.destination);
-        applyEqGains();
+        applyEqPreset(currentPreset);
         eqInitialized = true;
         if (audioContext.state === 'suspended') audioContext.resume();
-        drawSpectrum();
     }
 
-    function applyEqGains() {
-        if (!eqInitialized) return;
-        const gains = [
-            parseFloat(eqSliders.eq60.value), parseFloat(eqSliders.eq250.value),
-            parseFloat(eqSliders.eq1k.value), parseFloat(eqSliders.eq4k.value),
-            parseFloat(eqSliders.eq12k.value)
-        ];
-        filters.forEach((f, idx) => { f.gain.value = gains[idx]; });
-    }
-
-    function updateEqDisplay() {
-        for (let id in eqSliders) {
-            const val = eqSliders[id].value;
-            eqValues[id + 'val'].innerText = val;
-        }
-        if (eqInitialized) applyEqGains();
-        drawSpectrum();
-    }
-
-    function setEqPreset(preset) {
+    function applyEqPreset(preset) {
         let gains = [0,0,0,0,0];
         switch(preset) {
             case 'rock': gains = [4,2,-2,-1,3]; break;
@@ -782,63 +600,133 @@
             case 'noise': gains = [-2,-1,-1,0,1]; break;
             default: gains = [0,0,0,0,0];
         }
-        const keys = ['eq60','eq250','eq1k','eq4k','eq12k'];
-        keys.forEach((key, idx) => { eqSliders[key].value = gains[idx]; });
-        updateEqDisplay();
+        if (filters.length) {
+            filters.forEach((f, idx) => { f.gain.value = gains[idx]; });
+        }
+        drawSpectrumFromGains(gains);
     }
 
-    function resetEq() {
-        const keys = ['eq60','eq250','eq1k','eq4k','eq12k'];
-        keys.forEach(key => { eqSliders[key].value = 0; });
-        updateEqDisplay();
-        eqPresetSelect.value = 'flat';
-    }
-
-    // Espectrograma animado (simula frecuencias según los sliders)
-    function drawSpectrum() {
-        if (!ctx) return;
+    function drawSpectrumFromGains(gains) {
+        if (!ctxSpectrum) return;
         const w = spectrumCanvas.clientWidth;
         const h = spectrumCanvas.clientHeight;
         spectrumCanvas.width = w;
         spectrumCanvas.height = h;
-        ctx.clearRect(0, 0, w, h);
-        const gains = [
-            parseFloat(eqSliders.eq60.value), parseFloat(eqSliders.eq250.value),
-            parseFloat(eqSliders.eq1k.value), parseFloat(eqSliders.eq4k.value),
-            parseFloat(eqSliders.eq12k.value)
-        ];
-        const freqs = [60, 250, 1000, 4000, 12000];
+        ctxSpectrum.clearRect(0, 0, w, h);
+        const freqs = [60,250,1000,4000,12000];
         const barWidth = w / (freqs.length * 1.5);
         for (let i = 0; i < freqs.length; i++) {
             const level = Math.min(1, Math.max(0, (gains[i] + 12) / 24));
             const barHeight = Math.max(4, level * (h - 20));
             const x = i * (barWidth + 8) + 20;
-            ctx.fillStyle = `hsl(${120 + level * 60}, 70%, 50%)`;
-            ctx.fillRect(x, h - barHeight - 10, barWidth, barHeight);
-            ctx.fillStyle = '#cbd5e1';
-            ctx.font = '10px monospace';
-            ctx.fillText(freqs[i] + 'Hz', x, h - 5);
+            ctxSpectrum.fillStyle = `hsl(${120 + level * 60}, 70%, 55%)`;
+            ctxSpectrum.fillRect(x, h - barHeight - 10, barWidth, barHeight);
+            ctxSpectrum.fillStyle = '#cbd5e1';
+            ctxSpectrum.font = '10px monospace';
+            ctxSpectrum.fillText(freqs[i] + 'Hz', x, h - 5);
         }
     }
 
-    // Eventos EQ
-    eqLauncherBtn.addEventListener('click', () => { eqModal.classList.add('active'); drawSpectrum(); });
-    closeEqBtn.addEventListener('click', () => { eqModal.classList.remove('active'); });
-    eqModal.addEventListener('click', (e) => { if(e.target === eqModal) eqModal.classList.remove('active'); });
-    eqPresetSelect.addEventListener('change', (e) => { setEqPreset(e.target.value); });
-    resetEqBtn.addEventListener('click', resetEq);
-    for(let id in eqSliders) {
-        eqSliders[id].addEventListener('input', updateEqDisplay);
+    function resetEqToFlat() {
+        currentPreset = 'flat';
+        eqPresetSelect.value = 'flat';
+        applyEqPreset('flat');
     }
 
+    // Inicializar por si el usuario abre el modal sin haber iniciado EQ
     function ensureEqStarted() {
         if (!eqInitialized && isPlaying) {
             initEqualizer();
-            if(audioContext && audioContext.state === 'suspended') audioContext.resume();
+            if (audioContext && audioContext.state === 'suspended') audioContext.resume();
         }
     }
 
-    // ========== Reproductor ==========
+    // ========== Mandala animado (analizador frecuencias) ==========
+    function initMandala() {
+        if (!audioContext) return;
+        if (!analyser) {
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            // desconectar EQ actual y conectar analyser
+            if (filters.length) {
+                filters[filters.length-1].disconnect();
+                filters[filters.length-1].connect(analyser);
+                analyser.connect(audioContext.destination);
+            } else if (sourceNode) {
+                sourceNode.disconnect();
+                sourceNode.connect(analyser);
+                analyser.connect(audioContext.destination);
+            }
+            startMandalaAnimation(analyser);
+        } else {
+            startMandalaAnimation(analyser);
+        }
+    }
+
+    function startMandalaAnimation(analyserNode) {
+        if (mandalaAnimationId) cancelAnimationFrame(mandalaAnimationId);
+        const bufferLength = analyserNode.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        const w = mandalaCanvas.clientWidth;
+        const h = mandalaCanvas.clientHeight;
+        mandalaCanvas.width = w;
+        mandalaCanvas.height = h;
+        const centerX = w/2, centerY = h/2;
+        function draw() {
+            if (!mandalaModal.classList.contains('active')) {
+                if (mandalaAnimationId) cancelAnimationFrame(mandalaAnimationId);
+                mandalaAnimationId = null;
+                return;
+            }
+            analyserNode.getByteFrequencyData(dataArray);
+            const avg = dataArray.reduce((a,b)=>a+b,0)/bufferLength;
+            const intensity = Math.min(1, avg / 128);
+            const radiusBase = Math.min(w,h)/3;
+            const radius = radiusBase + intensity * radiusBase*0.6;
+            ctxMandala.clearRect(0, 0, w, h);
+            const hue = 180 + intensity * 180;
+            ctxMandala.strokeStyle = `hsl(${hue}, 80%, 60%)`;
+            ctxMandala.lineWidth = 3;
+            for (let i = 0; i < 36; i++) {
+                const angle = (i / 36) * Math.PI * 2;
+                const x1 = centerX + Math.cos(angle) * radius;
+                const y1 = centerY + Math.sin(angle) * radius;
+                const x2 = centerX + Math.cos(angle + Math.PI) * radius*0.5;
+                const y2 = centerY + Math.sin(angle + Math.PI) * radius*0.5;
+                ctxMandala.beginPath();
+                ctxMandala.moveTo(x1, y1);
+                ctxMandala.lineTo(x2, y2);
+                ctxMandala.stroke();
+                ctxMandala.beginPath();
+                ctxMandala.arc(centerX, centerY, radius*0.2 + intensity*10, 0, Math.PI*2);
+                ctxMandala.fillStyle = `hsla(${hue}, 80%, 60%, 0.3)`;
+                ctxMandala.fill();
+            }
+            mandalaAnimationId = requestAnimationFrame(draw);
+        }
+        draw();
+    }
+
+    function stopMandala() {
+        if (mandalaAnimationId) {
+            cancelAnimationFrame(mandalaAnimationId);
+            mandalaAnimationId = null;
+        }
+        if (analyser) {
+            // reconectar EQ normal después de cerrar
+            if (filters.length && audioContext) {
+                filters[filters.length-1].disconnect();
+                filters[filters.length-1].connect(audioContext.destination);
+            } else if (sourceNode && audioContext) {
+                sourceNode.disconnect();
+                sourceNode.connect(audioContext.destination);
+            }
+        }
+    }
+
+    // ========== Reproductor básico ==========
     function formatTime(sec) { if(isNaN(sec)) return '00:00'; const m=Math.floor(sec/60); const s=Math.floor(sec%60); return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
     function updateCounter() { if(!library.length) trackCounterSpan.innerText = `TRACK 00/00`; else trackCounterSpan.innerText = `TRACK ${(currentIdx+1).toString().padStart(2,'0')}/${library.length.toString().padStart(2,'0')}`; }
     function refreshUI() { if(library[currentIdx]) songTitleSpan.innerText = library[currentIdx].name; else songTitleSpan.innerText = '🎵 NO FILE'; playBtn.innerText = isPlaying ? '⏸ PAUSE' : '▶ PLAY'; updateCounter(); if(repeatAll) repeatAllBtn.classList.add('active'); else repeatAllBtn.classList.remove('active'); if(repeatOne) repeatOneBtn.classList.add('active'); else repeatOneBtn.classList.remove('active'); }
@@ -857,16 +745,8 @@
     function refreshPlaylistHighlight() {
         const rows = document.querySelectorAll('.song-row');
         rows.forEach((row, idx) => {
-            if(idx === currentIdx && isPlaying) {
-                row.classList.add('now-playing');
-                if(!row.querySelector('.playing-led')) {
-                    const led = document.createElement('span'); led.className = 'playing-led';
-                    row.querySelector('.song-info')?.appendChild(led);
-                }
-            } else {
-                row.classList.remove('now-playing');
-                const led = row.querySelector('.playing-led'); if(led) led.remove();
-            }
+            if(idx === currentIdx && isPlaying) { row.classList.add('now-playing'); if(!row.querySelector('.playing-led')) { const led = document.createElement('span'); led.className = 'playing-led'; row.querySelector('.song-info')?.appendChild(led); } }
+            else { row.classList.remove('now-playing'); const led = row.querySelector('.playing-led'); if(led) led.remove(); }
         });
         updateCounter();
     }
@@ -889,22 +769,12 @@
         const [moved] = library.splice(fromIdx, 1);
         library.splice(toIdx, 0, moved);
         const rows = document.querySelectorAll('.song-row');
-        if(fromIdx < rows.length && toIdx < rows.length) {
-            if(fromIdx < toIdx) rows[toIdx].insertAdjacentElement('afterend', rows[fromIdx]);
-            else rows[toIdx].insertAdjacentElement('beforebegin', rows[fromIdx]);
-        }
+        if(fromIdx < rows.length && toIdx < rows.length) { if(fromIdx < toIdx) rows[toIdx].insertAdjacentElement('afterend', rows[fromIdx]); else rows[toIdx].insertAdjacentElement('beforebegin', rows[fromIdx]); }
         if(currentIdx === fromIdx) currentIdx = toIdx;
         else if(fromIdx < currentIdx && toIdx >= currentIdx) currentIdx--;
         else if(fromIdx > currentIdx && toIdx <= currentIdx) currentIdx++;
         updateTrackNumbers();
-        if(wasPlaying && library[currentIdx]) {
-            if(audio.src !== library[currentIdx].url) {
-                audio.src = library[currentIdx].url;
-                audio.currentTime = currentTime;
-                audio.load();
-                audio.play().catch(e=>console.log(e));
-            } else if(audio.currentTime !== currentTime) audio.currentTime = currentTime;
-        }
+        if(wasPlaying && library[currentIdx]) { if(audio.src !== library[currentIdx].url) { audio.src = library[currentIdx].url; audio.currentTime = currentTime; audio.load(); audio.play().catch(e=>console.log(e)); } else if(audio.currentTime !== currentTime) audio.currentTime = currentTime; }
         refreshPlaylistHighlight(); refreshUI();
     }
 
@@ -928,10 +798,7 @@
         let html = '';
         library.forEach((track, idx) => {
             const activeClass = (idx === currentIdx && isPlaying) ? 'now-playing' : '';
-            html += `<div class="song-row ${activeClass}" data-index="${idx}" tabindex="0">
-                        <div class="song-info"><span style="opacity:0.7; width:30px;">${(idx+1).toString().padStart(2,'0')}</span><span class="song-name">${escapeHtml(track.name)}</span>${ (idx === currentIdx && isPlaying) ? '<span class="playing-led"></span>' : '' }</div>
-                        <div class="song-actions"><button class="move-up" data-action="up" data-idx="${idx}" title="Mover arriba" tabindex="-1">⬆️</button><button class="move-down" data-action="down" data-idx="${idx}" title="Mover abajo" tabindex="-1">⬇️</button><button class="delete-btn" data-action="delete" data-idx="${idx}" title="Eliminar" tabindex="-1">❌</button></div>
-                    </div>`;
+            html += `<div class="song-row ${activeClass}" data-index="${idx}" tabindex="0"><div class="song-info"><span style="opacity:0.7; width:30px;">${(idx+1).toString().padStart(2,'0')}</span><span class="song-name">${escapeHtml(track.name)}</span>${ (idx === currentIdx && isPlaying) ? '<span class="playing-led"></span>' : '' }</div><div class="song-actions"><button class="move-up" data-action="up" data-idx="${idx}" tabindex="-1">⬆️</button><button class="move-down" data-action="down" data-idx="${idx}" tabindex="-1">⬇️</button><button class="delete-btn" data-action="delete" data-idx="${idx}" tabindex="-1">❌</button></div></div>`;
         });
         playlistDiv.innerHTML = html;
         document.querySelectorAll('.move-up').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); const i = parseInt(btn.dataset.idx); if(i > 0) moveSongDOM(i, i-1); }); });
@@ -941,16 +808,11 @@
     }
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => { if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m; }); }
 
-    // Eventos audio
+    // ========== Eventos audio y player ==========
     audio.addEventListener('timeupdate', () => { if(audio.duration){ const percent=(audio.currentTime/audio.duration)*100; progressSlider.value=percent; progressFill.style.width=percent+'%'; currentTimeSpan.innerText=formatTime(audio.currentTime); totalTimeSpan.innerText=formatTime(audio.duration); } });
     progressSlider.addEventListener('input', (e) => { if(audio.duration) audio.currentTime=(e.target.value/100)*audio.duration; });
     volumeCtrl.addEventListener('input', (e) => { currentVolume=e.target.value; audio.volume=currentVolume/100; volFill.style.width=currentVolume+'%'; volValue.innerText=currentVolume+'%'; });
-    audio.addEventListener('ended', () => {
-        if(library.length===0) return;
-        if(repeatOne) { loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); }
-        else if(repeatAll) { currentIdx=(currentIdx+1)%library.length; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); }
-        else { isPlaying=false; refreshUI(); refreshPlaylistHighlight(); }
-    });
+    audio.addEventListener('ended', () => { if(library.length===0) return; if(repeatOne) { loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); } else if(repeatAll) { currentIdx=(currentIdx+1)%library.length; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); } else { isPlaying=false; refreshUI(); refreshPlaylistHighlight(); } });
 
     const togglePlay = () => { if(!library.length) return; if(isPlaying) audio.pause(); else { audio.play().catch(e=>console.log(e)); ensureEqStarted(); } isPlaying=!isPlaying; refreshUI(); refreshPlaylistHighlight(); };
     const nextTrack = () => { if(!library.length) return; if(currentIdx+1<library.length) currentIdx++; else if(repeatAll) currentIdx=0; else return; isPlaying=true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); };
@@ -964,12 +826,25 @@
     importBtn.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', (e) => { const files=Array.from(e.target.files); let newEntries=[]; files.forEach(f=>{ if(f.type.startsWith('audio/') || /\.(mp3|m4a|wav|ogg|mp4)$/i.test(f.name)){ const url=URL.createObjectURL(f); const name=f.name.replace(/\.[^/.]+$/,''); if(!library.some(s=>s.name===name)) newEntries.push({name,url}); } }); if(!newEntries.length) return; library.push(...newEntries); renderPlaylist(); if(library.length===newEntries.length){ currentIdx=0; isPlaying=true; loadTrack(0); audio.play().catch(e=>console.log(e)); ensureEqStarted(); } fileInput.value=''; });
 
+    // Temas
     const themes = { green:{accent:'#10b981',dark:'#047857',glow:'#34d399',bgEnd:'#064e3b'}, purple:{accent:'#8b5cf6',dark:'#6d28d9',glow:'#a78bfa',bgEnd:'#4c1d95'}, blue:{accent:'#3b82f6',dark:'#1d4ed8',glow:'#60a5fa',bgEnd:'#1e3a8a'}, silver:{accent:'#94a3b8',dark:'#64748b',glow:'#cbd5e1',bgEnd:'#1e293b'}, amber:{accent:'#f59e0b',dark:'#b45309',glow:'#fbbf24',bgEnd:'#78350f'} };
     const applyTheme = (themeName) => { const t=themes[themeName]; if(!t) return; document.documentElement.style.setProperty('--accent', t.accent); document.documentElement.style.setProperty('--accent-dark', t.dark); document.documentElement.style.setProperty('--accent-glow', t.glow); document.body.style.background = `linear-gradient(135deg, #0a0f1e 0%, ${t.bgEnd} 100%)`; document.querySelectorAll('.color-dot').forEach(dot=>{ if(dot.dataset.theme===themeName) dot.classList.add('active'); else dot.classList.remove('active'); }); };
     document.querySelectorAll('.color-dot').forEach(dot=>{ dot.addEventListener('click',()=>applyTheme(dot.dataset.theme)); });
-    tipsBtn.addEventListener('click',()=>tipsModal.classList.add('active'));
-    closeModalBtn.addEventListener('click',()=>tipsModal.classList.remove('active'));
-    tipsModal.addEventListener('click',(e)=>{ if(e.target===tipsModal) tipsModal.classList.remove('active'); });
+
+    // MODALES
+    function openModal(modal) { modal.classList.add('active'); }
+    function closeModal(modal) { modal.classList.remove('active'); if(modal === mandalaModal) stopMandala(); }
+    eqLauncherBtn.addEventListener('click', () => { openModal(eqModal); drawSpectrumFromGains(filters.length ? filters.map(f=>f.gain.value) : [0,0,0,0,0]); });
+    mandalaLauncherBtn.addEventListener('click', () => { openModal(mandalaModal); if(audioContext && isPlaying) { initMandala(); } else { alert("Reproduce música primero para que el visualizador se mueva."); closeModal(mandalaModal); } });
+    closeEqBtn.addEventListener('click', () => closeModal(eqModal));
+    closeMandalaBtn.addEventListener('click', () => closeModal(mandalaModal));
+    eqModal.addEventListener('click', (e) => { if(e.target === eqModal) closeModal(eqModal); });
+    mandalaModal.addEventListener('click', (e) => { if(e.target === mandalaModal) closeModal(mandalaModal); });
+    eqPresetSelect.addEventListener('change', (e) => { currentPreset = e.target.value; applyEqPreset(currentPreset); });
+    resetEqBtn.addEventListener('click', () => { resetEqToFlat(); });
+    tipsBtn.addEventListener('click',()=>openModal(tipsModal));
+    closeModalBtn.addEventListener('click',()=>closeModal(tipsModal));
+    tipsModal.addEventListener('click',(e)=>{ if(e.target === tipsModal) closeModal(tipsModal); });
     feedbackBtn.addEventListener('click',()=>{ window.open('mailto:rodrigooctavioalmanza@gmail.com?subject=Feedback%20PortaTune&body=Hola,%0A%0AQuiero%20compartir%20mi%20feedback%20sobre%20PortaTune:%0A%0A','_blank'); });
     donateBtn.addEventListener('click',()=>{ window.open('https://ko-fi.com/portatune','_blank'); });
 
@@ -979,8 +854,7 @@
     applyTheme('green');
     renderPlaylist();
     refreshUI();
-    // dibujamos el canvas inicial (espectro flat)
-    drawSpectrum();
+    drawSpectrumFromGains([0,0,0,0,0]);
 </script>
 </body>
 </html>
