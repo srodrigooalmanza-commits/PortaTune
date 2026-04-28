@@ -183,97 +183,130 @@
             cursor: pointer;
         }
 
-        /* Equalizador */
-        .eq-section {
-            background: #0f172a;
-            border-radius: 24px;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid #334155;
-        }
-        .eq-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .eq-toggle {
+        /* Botón EQ que abre modal */
+        .eq-launcher {
             background: var(--accent);
             border: none;
-            font-size: 18px;
+            font-size: 14px;
             font-weight: bold;
             padding: 8px 16px;
             border-radius: 40px;
             cursor: pointer;
             color: #030712;
             font-family: monospace;
+            margin-bottom: 20px;
+            width: 100%;
             transition: 0.1s;
-            box-shadow: 0 0 8px var(--accent);
+            box-shadow: 0 0 6px var(--accent);
         }
-        .eq-toggle:hover {
-            transform: scale(1.02);
-        }
-        .eq-presets {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+        .eq-launcher:active { transform: scale(0.97); }
+
+        /* Modal EQ */
+        .eq-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000dd;
+            backdrop-filter: blur(8px);
             justify-content: center;
+            align-items: center;
+            z-index: 2000;
         }
-        .preset-btn {
-            background: #1e293b;
+        .eq-modal.active { display: flex; }
+        .eq-modal-content {
+            background: #111827;
+            border-radius: 48px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--accent);
+            box-shadow: 0 30px 40px rgba(0,0,0,0.5);
+        }
+        .eq-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .eq-modal-header h3 {
+            color: var(--accent-glow);
+            font-size: 18px;
+        }
+        .close-eq {
+            background: none;
             border: none;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 11px;
-            font-family: monospace;
+            font-size: 24px;
             cursor: pointer;
             color: #cbd5e1;
-            transition: 0.1s;
         }
-        .preset-btn:hover {
-            background: #334155;
+        .spectrum-canvas {
+            background: #0f172a;
+            border-radius: 20px;
+            width: 100%;
+            height: 100px;
+            margin-bottom: 20px;
         }
-        .eq-controls {
-            margin-top: 12px;
+        .eq-preset-select {
+            width: 100%;
+            padding: 10px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 40px;
+            color: #e2e8f0;
+            font-family: monospace;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .eq-bands {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
+            margin-bottom: 20px;
         }
-        .eq-band {
+        .eq-band-row {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        .eq-band label {
-            width: 50px;
-            font-size: 11px;
+        .eq-band-row label {
+            width: 55px;
+            font-size: 12px;
             color: #94a3b8;
         }
-        .eq-band input {
+        .eq-band-row input {
             flex: 1;
             height: 4px;
             -webkit-appearance: none;
             background: #334155;
             border-radius: 4px;
         }
-        .eq-band input::-webkit-slider-thumb {
+        .eq-band-row input::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             background: var(--accent);
             border-radius: 50%;
             cursor: pointer;
         }
-        .eq-value {
+        .eq-band-row span {
             width: 35px;
-            font-size: 10px;
+            font-size: 11px;
             text-align: right;
             color: #cbd5e1;
         }
-        .eq-hidden {
-            display: none;
+        .eq-reset {
+            background: #1e293b;
+            border: none;
+            padding: 8px;
+            border-radius: 40px;
+            color: #cbd5e1;
+            font-family: monospace;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
         }
 
         .transport {
@@ -515,7 +548,7 @@
             .brand-text { font-size: 18px; }
             .song-actions button { width: 32px; height: 32px; font-size: 16px; }
             .song-name { font-size: 11px; }
-            .eq-band label { width: 45px; font-size: 9px; }
+            .eq-band-row label { width: 50px; font-size: 10px; }
         }
     </style>
 </head>
@@ -555,29 +588,8 @@
                     </div>
                 </div>
 
-                <!-- Equalizador (colapsable) -->
-                <div class="eq-section" id="eqSection">
-                    <div class="eq-header">
-                        <button id="eqToggleBtn" class="eq-toggle">🎛️ EQ ON</button>
-                        <div class="eq-presets" id="eqPresets">
-                            <button class="preset-btn" data-preset="flat">Flat</button>
-                            <button class="preset-btn" data-preset="rock">Rock</button>
-                            <button class="preset-btn" data-preset="pop">Pop</button>
-                            <button class="preset-btn" data-preset="jazz">Jazz</button>
-                            <button class="preset-btn" data-preset="electronic">Electronic</button>
-                            <button class="preset-btn" data-preset="voice">Voice</button>
-                            <button class="preset-btn" data-preset="hiz">Hi‑Z</button>
-                            <button class="preset-btn" data-preset="noise">Noise Reduction</button>
-                        </div>
-                    </div>
-                    <div id="eqControls" class="eq-controls">
-                        <div class="eq-band"><label>60 Hz</label><input type="range" id="eq60" min="-12" max="12" value="0" step="1"><span class="eq-value" id="eq60val">0</span></div>
-                        <div class="eq-band"><label>250 Hz</label><input type="range" id="eq250" min="-12" max="12" value="0" step="1"><span class="eq-value" id="eq250val">0</span></div>
-                        <div class="eq-band"><label>1 kHz</label><input type="range" id="eq1k" min="-12" max="12" value="0" step="1"><span class="eq-value" id="eq1kval">0</span></div>
-                        <div class="eq-band"><label>4 kHz</label><input type="range" id="eq4k" min="-12" max="12" value="0" step="1"><span class="eq-value" id="eq4kval">0</span></div>
-                        <div class="eq-band"><label>12 kHz</label><input type="range" id="eq12k" min="-12" max="12" value="0" step="1"><span class="eq-value" id="eq12kval">0</span></div>
-                    </div>
-                </div>
+                <!-- Botón que abre el modal (menos intrusivo) -->
+                <button id="eqLauncherBtn" class="eq-launcher">🎛️ ECUALIZADOR</button>
 
                 <div class="transport" id="transportBar">
                     <button id="prevBtn" class="transport-btn" tabindex="0">⏮</button>
@@ -613,6 +625,35 @@
 
 <audio id="audioElement"></audio>
 
+<!-- MODAL EQ (flotante, mobile friendly) -->
+<div id="eqModal" class="eq-modal">
+    <div class="eq-modal-content">
+        <div class="eq-modal-header">
+            <h3>🎛️ ECUALIZADOR GRÁFICO</h3>
+            <button id="closeEqBtn" class="close-eq">✕</button>
+        </div>
+        <canvas id="spectrumCanvas" class="spectrum-canvas" width="400" height="100"></canvas>
+        <select id="eqPresetSelect" class="eq-preset-select">
+            <option value="flat">Flat (sin ecualización)</option>
+            <option value="rock">Rock</option>
+            <option value="pop">Pop</option>
+            <option value="jazz">Jazz</option>
+            <option value="electronic">Electronic</option>
+            <option value="voice">Voice (podcasts)</option>
+            <option value="hiz">Hi‑Z (agudos realzados)</option>
+            <option value="noise">Noise Reduction</option>
+        </select>
+        <div class="eq-bands">
+            <div class="eq-band-row"><label>60 Hz</label><input type="range" id="eq60" min="-12" max="12" value="0" step="1"><span id="eq60val">0</span></div>
+            <div class="eq-band-row"><label>250 Hz</label><input type="range" id="eq250" min="-12" max="12" value="0" step="1"><span id="eq250val">0</span></div>
+            <div class="eq-band-row"><label>1 kHz</label><input type="range" id="eq1k" min="-12" max="12" value="0" step="1"><span id="eq1kval">0</span></div>
+            <div class="eq-band-row"><label>4 kHz</label><input type="range" id="eq4k" min="-12" max="12" value="0" step="1"><span id="eq4kval">0</span></div>
+            <div class="eq-band-row"><label>12 kHz</label><input type="range" id="eq12k" min="-12" max="12" value="0" step="1"><span id="eq12kval">0</span></div>
+        </div>
+        <button id="resetEqBtn" class="eq-reset">Restablecer (Flat)</button>
+    </div>
+</div>
+
 <div id="tipsModal" class="modal-tips">
     <div class="modal-card">
         <h3 style="color:var(--accent); margin-bottom:16px;">🎧 GUIDE · PORTATUNE</h3>
@@ -620,7 +661,7 @@
             <li><strong>1️⃣ SAVE FILES FIRST</strong><br>Download audio to your device. From WhatsApp: tap & hold → "Save to Files".</li>
             <li><strong>2️⃣ IMPORT</strong><br>Click "IMPORT LOCAL MUSIC" and select your files (multiple at once).</li>
             <li><strong>3️⃣ LOOP MODES</strong><br>🔁 Repeat all playlist. 🔂 Repeat one song. No loop = stops after each track.</li>
-            <li><strong>🎛️ EQ</strong><br>Press "EQ ON" to expand equalizer. Choose presets or adjust sliders.</li>
+            <li><strong>🎛️ EQ</strong><br>Press "ECUALIZADOR" to open graphic equalizer (5 bands + presets).</li>
             <li><strong>🎨 COLORS</strong><br>Use the small circles (top right) to change the interface theme.</li>
             <li><strong>📱 ADD TO HOME SCREEN</strong><br>Share menu → "Add to Home Screen" → standalone app.</li>
             <li><strong>📝 MANAGE PLAYLIST</strong><br>Use ↑ ↓ to reorder tracks. Click ❌ to remove a song.</li>
@@ -631,7 +672,7 @@
 </div>
 
 <script>
-    // Elementos del DOM
+    // Elementos DOM principales
     const audio = document.getElementById('audioElement');
     const playBtn = document.getElementById('playBtn');
     const prevBtn = document.getElementById('prevBtn');
@@ -656,9 +697,12 @@
     const repeatAllBtn = document.getElementById('repeatAllBtn');
     const repeatOneBtn = document.getElementById('repeatOneBtn');
 
-    // Equalizador elementos
-    const eqToggleBtn = document.getElementById('eqToggleBtn');
-    const eqControlsDiv = document.getElementById('eqControls');
+    // EQ elementos
+    const eqLauncherBtn = document.getElementById('eqLauncherBtn');
+    const eqModal = document.getElementById('eqModal');
+    const closeEqBtn = document.getElementById('closeEqBtn');
+    const eqPresetSelect = document.getElementById('eqPresetSelect');
+    const resetEqBtn = document.getElementById('resetEqBtn');
     const eqSliders = {
         eq60: document.getElementById('eq60'), eq250: document.getElementById('eq250'),
         eq1k: document.getElementById('eq1k'), eq4k: document.getElementById('eq4k'),
@@ -669,13 +713,14 @@
         eq1kval: document.getElementById('eq1kval'), eq4kval: document.getElementById('eq4kval'),
         eq12kval: document.getElementById('eq12kval')
     };
+    const spectrumCanvas = document.getElementById('spectrumCanvas');
+    const ctx = spectrumCanvas.getContext('2d');
     let audioContext = null;
     let sourceNode = null;
     let filters = [];
-    let eqEnabled = true;
     let eqInitialized = false;
 
-    // Estado reproducción
+    // Estado de la app
     let library = [];
     let currentIdx = 0;
     let isPlaying = false;
@@ -683,7 +728,7 @@
     let repeatAll = false;
     let repeatOne = false;
 
-    // ========== Ecualizador (Web Audio API) ==========
+    // ========== Ecualizador ==========
     function initEqualizer() {
         if (audioContext) return;
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -703,10 +748,11 @@
         applyEqGains();
         eqInitialized = true;
         if (audioContext.state === 'suspended') audioContext.resume();
+        drawSpectrum();
     }
 
     function applyEqGains() {
-        if (!eqEnabled || !filters.length) return;
+        if (!eqInitialized) return;
         const gains = [
             parseFloat(eqSliders.eq60.value), parseFloat(eqSliders.eq250.value),
             parseFloat(eqSliders.eq1k.value), parseFloat(eqSliders.eq4k.value),
@@ -721,6 +767,7 @@
             eqValues[id + 'val'].innerText = val;
         }
         if (eqInitialized) applyEqGains();
+        drawSpectrum();
     }
 
     function setEqPreset(preset) {
@@ -736,45 +783,62 @@
             default: gains = [0,0,0,0,0];
         }
         const keys = ['eq60','eq250','eq1k','eq4k','eq12k'];
-        keys.forEach((key, idx) => {
-            eqSliders[key].value = gains[idx];
-        });
+        keys.forEach((key, idx) => { eqSliders[key].value = gains[idx]; });
         updateEqDisplay();
     }
 
-    // Eventos equalizador
-    eqToggleBtn.addEventListener('click', () => {
-        if (eqControlsDiv.classList.contains('eq-hidden')) {
-            eqControlsDiv.classList.remove('eq-hidden');
-            eqToggleBtn.textContent = '🎛️ EQ ON';
-            eqEnabled = true;
-        } else {
-            eqControlsDiv.classList.add('eq-hidden');
-            eqToggleBtn.textContent = '🎛️ EQ OFF';
-            eqEnabled = false;
-        }
-        if (eqInitialized && eqEnabled) applyEqGains();
-        else if (!eqEnabled && filters.length) filters.forEach(f => f.gain.value = 0);
-    });
-    for (let id in eqSliders) {
-        eqSliders[id].addEventListener('input', () => {
-            updateEqDisplay();
-            if (eqEnabled && eqInitialized) applyEqGains();
-        });
+    function resetEq() {
+        const keys = ['eq60','eq250','eq1k','eq4k','eq12k'];
+        keys.forEach(key => { eqSliders[key].value = 0; });
+        updateEqDisplay();
+        eqPresetSelect.value = 'flat';
     }
-    document.querySelectorAll('.preset-btn').forEach(btn => {
-        btn.addEventListener('click', () => setEqPreset(btn.dataset.preset));
-    });
 
-    // Inicialización EQ al primer play
+    // Espectrograma animado (simula frecuencias según los sliders)
+    function drawSpectrum() {
+        if (!ctx) return;
+        const w = spectrumCanvas.clientWidth;
+        const h = spectrumCanvas.clientHeight;
+        spectrumCanvas.width = w;
+        spectrumCanvas.height = h;
+        ctx.clearRect(0, 0, w, h);
+        const gains = [
+            parseFloat(eqSliders.eq60.value), parseFloat(eqSliders.eq250.value),
+            parseFloat(eqSliders.eq1k.value), parseFloat(eqSliders.eq4k.value),
+            parseFloat(eqSliders.eq12k.value)
+        ];
+        const freqs = [60, 250, 1000, 4000, 12000];
+        const barWidth = w / (freqs.length * 1.5);
+        for (let i = 0; i < freqs.length; i++) {
+            const level = Math.min(1, Math.max(0, (gains[i] + 12) / 24));
+            const barHeight = Math.max(4, level * (h - 20));
+            const x = i * (barWidth + 8) + 20;
+            ctx.fillStyle = `hsl(${120 + level * 60}, 70%, 50%)`;
+            ctx.fillRect(x, h - barHeight - 10, barWidth, barHeight);
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '10px monospace';
+            ctx.fillText(freqs[i] + 'Hz', x, h - 5);
+        }
+    }
+
+    // Eventos EQ
+    eqLauncherBtn.addEventListener('click', () => { eqModal.classList.add('active'); drawSpectrum(); });
+    closeEqBtn.addEventListener('click', () => { eqModal.classList.remove('active'); });
+    eqModal.addEventListener('click', (e) => { if(e.target === eqModal) eqModal.classList.remove('active'); });
+    eqPresetSelect.addEventListener('change', (e) => { setEqPreset(e.target.value); });
+    resetEqBtn.addEventListener('click', resetEq);
+    for(let id in eqSliders) {
+        eqSliders[id].addEventListener('input', updateEqDisplay);
+    }
+
     function ensureEqStarted() {
         if (!eqInitialized && isPlaying) {
             initEqualizer();
-            if (audioContext && audioContext.state === 'suspended') audioContext.resume();
+            if(audioContext && audioContext.state === 'suspended') audioContext.resume();
         }
     }
 
-    // ========== Funciones reproductor ==========
+    // ========== Reproductor ==========
     function formatTime(sec) { if(isNaN(sec)) return '00:00'; const m=Math.floor(sec/60); const s=Math.floor(sec%60); return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
     function updateCounter() { if(!library.length) trackCounterSpan.innerText = `TRACK 00/00`; else trackCounterSpan.innerText = `TRACK ${(currentIdx+1).toString().padStart(2,'0')}/${library.length.toString().padStart(2,'0')}`; }
     function refreshUI() { if(library[currentIdx]) songTitleSpan.innerText = library[currentIdx].name; else songTitleSpan.innerText = '🎵 NO FILE'; playBtn.innerText = isPlaying ? '⏸ PAUSE' : '▶ PLAY'; updateCounter(); if(repeatAll) repeatAllBtn.classList.add('active'); else repeatAllBtn.classList.remove('active'); if(repeatOne) repeatOneBtn.classList.add('active'); else repeatOneBtn.classList.remove('active'); }
@@ -881,7 +945,12 @@
     audio.addEventListener('timeupdate', () => { if(audio.duration){ const percent=(audio.currentTime/audio.duration)*100; progressSlider.value=percent; progressFill.style.width=percent+'%'; currentTimeSpan.innerText=formatTime(audio.currentTime); totalTimeSpan.innerText=formatTime(audio.duration); } });
     progressSlider.addEventListener('input', (e) => { if(audio.duration) audio.currentTime=(e.target.value/100)*audio.duration; });
     volumeCtrl.addEventListener('input', (e) => { currentVolume=e.target.value; audio.volume=currentVolume/100; volFill.style.width=currentVolume+'%'; volValue.innerText=currentVolume+'%'; });
-    audio.addEventListener('ended', () => { if(library.length===0) return; if(repeatOne){ loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); } else if(repeatAll){ currentIdx=(currentIdx+1)%library.length; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); } else { isPlaying=false; refreshUI(); refreshPlaylistHighlight(); } });
+    audio.addEventListener('ended', () => {
+        if(library.length===0) return;
+        if(repeatOne) { loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); }
+        else if(repeatAll) { currentIdx=(currentIdx+1)%library.length; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); }
+        else { isPlaying=false; refreshUI(); refreshPlaylistHighlight(); }
+    });
 
     const togglePlay = () => { if(!library.length) return; if(isPlaying) audio.pause(); else { audio.play().catch(e=>console.log(e)); ensureEqStarted(); } isPlaying=!isPlaying; refreshUI(); refreshPlaylistHighlight(); };
     const nextTrack = () => { if(!library.length) return; if(currentIdx+1<library.length) currentIdx++; else if(repeatAll) currentIdx=0; else return; isPlaying=true; loadTrack(currentIdx); audio.play().catch(e=>console.log(e)); refreshPlaylistHighlight(); };
@@ -910,9 +979,8 @@
     applyTheme('green');
     renderPlaylist();
     refreshUI();
-    eqControlsDiv.classList.add('eq-hidden'); // empieza colapsado
-    eqToggleBtn.textContent = '🎛️ EQ OFF';
-    eqEnabled = false;
+    // dibujamos el canvas inicial (espectro flat)
+    drawSpectrum();
 </script>
 </body>
 </html>
