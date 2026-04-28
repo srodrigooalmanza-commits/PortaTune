@@ -357,7 +357,7 @@
             background: #0f172a;
             border-radius: 20px;
             width: 100%;
-            height: 120px;
+            height: 150px;
             margin-bottom: 20px;
         }
         .mandala-container {
@@ -367,7 +367,7 @@
         .mandala-canvas {
             width: 100%;
             height: 300px;
-            background: #00000022;
+            background: #000000;
             border-radius: 50%;
         }
         .fullscreen-btn {
@@ -485,7 +485,7 @@
             <h3>🎛️ ECUALIZADOR</h3>
             <button class="close-modal close-eq">✕</button>
         </div>
-        <canvas id="spectrumCanvas" class="spectrum-canvas" width="400" height="120"></canvas>
+        <canvas id="spectrumCanvas" class="spectrum-canvas" width="400" height="150"></canvas>
         <select id="eqPresetSelect" class="eq-preset-select">
             <option value="flat">Flat (sin ecualización)</option>
             <option value="rock">Rock</option>
@@ -500,7 +500,7 @@
     </div>
 </div>
 
-<!-- MODAL MANDALA con botón de pantalla completa -->
+<!-- MODAL MANDALA con pantalla completa -->
 <div id="mandalaModal" class="modal-overlay">
     <div class="modal-card">
         <div class="modal-header">
@@ -511,7 +511,7 @@
             <canvas id="mandalaCanvas" class="mandala-canvas" width="400" height="400"></canvas>
             <button id="fullscreenBtn" class="fullscreen-btn">⛶ Pantalla completa</button>
         </div>
-        <div style="text-align:center; margin-top: 8px; font-size: 10px; color: #6b7280;">se mueve con la música</div>
+        <div style="text-align:center; margin-top: 8px; font-size: 10px; color: #6b7280;">gira y respira con la música</div>
     </div>
 </div>
 
@@ -590,6 +590,9 @@
     // Analizador para el mandala
     let analyser = null;
     let mandalaAnimationId = null;
+    let rotationDirection = 1;  // 1 = derecha, -1 = izquierda
+    let rotationAngle = 0;
+    let lastDirectionChange = 0;
 
     // ========== Ecualizador (solo presets) ==========
     function initEqualizer() {
@@ -639,16 +642,25 @@
         spectrumCanvas.height = h;
         ctxSpectrum.clearRect(0, 0, w, h);
         const freqs = [60,250,1000,4000,12000];
-        const barWidth = w / (freqs.length * 1.5);
+        const barWidth = (w - 40) / freqs.length * 0.6;
+        const spacing = (w - 40) / freqs.length;
         for (let i = 0; i < freqs.length; i++) {
             const level = Math.min(1, Math.max(0, (gains[i] + 12) / 24));
-            const barHeight = Math.max(4, level * (h - 20));
-            const x = i * (barWidth + 8) + 20;
-            ctxSpectrum.fillStyle = `hsl(${120 + level * 60}, 70%, 55%)`;
-            ctxSpectrum.fillRect(x, h - barHeight - 10, barWidth, barHeight);
+            const barHeight = Math.max(4, level * (h - 40));
+            const x = 25 + i * spacing;
+            const y = h - barHeight - 25;
+            // Gradiente vertical para las barras
+            const gradient = ctxSpectrum.createLinearGradient(x, y, x, y + barHeight);
+            gradient.addColorStop(0, `hsl(${120 + level * 60}, 80%, 65%)`);
+            gradient.addColorStop(1, `hsl(${120 + level * 60}, 80%, 45%)`);
+            ctxSpectrum.fillStyle = gradient;
+            ctxSpectrum.shadowBlur = 4;
+            ctxSpectrum.shadowColor = `hsl(${120 + level * 60}, 80%, 50%)`;
+            ctxSpectrum.fillRect(x, y, barWidth, barHeight);
+            ctxSpectrum.shadowBlur = 0;
             ctxSpectrum.fillStyle = '#cbd5e1';
             ctxSpectrum.font = '10px monospace';
-            ctxSpectrum.fillText(freqs[i] + 'Hz', x, h - 5);
+            ctxSpectrum.fillText(freqs[i] + 'Hz', x + barWidth/2 - 15, h - 10);
         }
     }
 
@@ -665,7 +677,7 @@
         }
     }
 
-    // ========== Mandala con pantalla completa ==========
+    // ========== Mandala con movimiento fluido (giro y tamaño) ==========
     function resizeMandalaCanvas() {
         const container = mandalaContainer;
         const w = container.clientWidth;
@@ -708,30 +720,76 @@
             analyserNode.getByteFrequencyData(dataArray);
             const avg = dataArray.reduce((a,b)=>a+b,0)/bufferLength;
             const intensity = Math.min(1, avg / 128);
+            
+            // Cambiar dirección de giro aleatoriamente cada ~3-5 segundos
+            const now = Date.now();
+            if (!lastDirectionChange || now - lastDirectionChange > 4000 + Math.random() * 2000) {
+                rotationDirection = (Math.random() > 0.5) ? 1 : -1;
+                lastDirectionChange = now;
+            }
+            // Velocidad de giro proporcional a la intensidad musical
+            const rotationSpeed = 0.02 * (0.3 + intensity * 0.7);
+            rotationAngle += rotationDirection * rotationSpeed;
+            
             const w = mandalaCanvas.width;
             const h = mandalaCanvas.height;
             const centerX = w/2, centerY = h/2;
-            const radiusBase = Math.min(w,h)/3;
-            const radius = radiusBase + intensity * radiusBase*0.6;
+            
+            // El tamaño máximo y mínimo también dependen de la intensidad
+            const minRadius = (intensity < 0.05) ? 0 : 15;
+            const maxRadius = Math.min(w,h)/2.2;
+            let radius = minRadius + intensity * (maxRadius - minRadius);
+            // si intensidad es casi cero, radio mínimo cercano a 0
+            if (intensity < 0.02) radius = 0;
+            
             ctxMandala.clearRect(0, 0, w, h);
-            const hue = 180 + intensity * 180;
-            ctxMandala.strokeStyle = `hsl(${hue}, 80%, 60%)`;
-            ctxMandala.lineWidth = 3;
-            for (let i = 0; i < 36; i++) {
-                const angle = (i / 36) * Math.PI * 2;
-                const x1 = centerX + Math.cos(angle) * radius;
-                const y1 = centerY + Math.sin(angle) * radius;
-                const x2 = centerX + Math.cos(angle + Math.PI) * radius*0.5;
-                const y2 = centerY + Math.sin(angle + Math.PI) * radius*0.5;
+            if (radius < 2 || intensity < 0.02) {
+                // Silencio -> fondo negro limpio (sin trazos)
+                ctxMandala.fillStyle = '#000000';
+                ctxMandala.fillRect(0, 0, w, h);
+                mandalaAnimationId = requestAnimationFrame(draw);
+                return;
+            }
+            
+            // Color del mandala: tonalidad que varía con la intensidad
+            const hue = (rotationAngle * 50) % 360;
+            ctxMandala.save();
+            ctxMandala.translate(centerX, centerY);
+            ctxMandala.rotate(rotationAngle);
+            
+            // Dibujar un mandala con múltiples anillos y pétalos
+            const rings = 3;
+            for (let r = 0; r < rings; r++) {
+                const ringRadius = radius * (0.4 + r * 0.3);
+                const alpha = 0.6 - r * 0.2;
+                ctxMandala.beginPath();
+                ctxMandala.arc(0, 0, ringRadius, 0, Math.PI * 2);
+                ctxMandala.strokeStyle = `hsla(${hue}, 80%, 65%, ${alpha})`;
+                ctxMandala.lineWidth = 1.5;
+                ctxMandala.stroke();
+            }
+            // Pétalos radiales
+            const petals = Math.max(12, Math.floor(24 * intensity));
+            for (let i = 0; i < petals; i++) {
+                const angle = (i / petals) * Math.PI * 2;
+                const x1 = Math.cos(angle) * radius * 0.2;
+                const y1 = Math.sin(angle) * radius * 0.2;
+                const x2 = Math.cos(angle) * radius;
+                const y2 = Math.sin(angle) * radius;
                 ctxMandala.beginPath();
                 ctxMandala.moveTo(x1, y1);
                 ctxMandala.lineTo(x2, y2);
+                ctxMandala.strokeStyle = `hsla(${hue + i * 10}, 70%, 60%, 0.7)`;
+                ctxMandala.lineWidth = 1.2;
                 ctxMandala.stroke();
-                ctxMandala.beginPath();
-                ctxMandala.arc(centerX, centerY, radius*0.2 + intensity*10, 0, Math.PI*2);
-                ctxMandala.fillStyle = `hsla(${hue}, 80%, 60%, 0.3)`;
-                ctxMandala.fill();
             }
+            // Círculo central
+            ctxMandala.beginPath();
+            ctxMandala.arc(0, 0, radius * 0.12, 0, Math.PI * 2);
+            ctxMandala.fillStyle = `hsl(${hue}, 70%, 55%)`;
+            ctxMandala.fill();
+            
+            ctxMandala.restore();
             mandalaAnimationId = requestAnimationFrame(draw);
         }
         draw();
@@ -751,13 +809,14 @@
                 sourceNode.connect(audioContext.destination);
             }
         }
+        rotationAngle = 0;
     }
 
     // Pantalla completa para el canvas mandala
     function enterFullscreen(element) {
         if (element.requestFullscreen) {
             element.requestFullscreen();
-        } else if (element.webkitRequestFullscreen) { /* Safari */
+        } else if (element.webkitRequestFullscreen) {
             element.webkitRequestFullscreen();
         }
     }
@@ -767,9 +826,8 @@
     });
 
     // Ajustar tamaño del canvas al entrar/salir de fullscreen
-    document.addEventListener('fullscreenchange', () => {
-        if (document.fullscreenElement === mandalaContainer) {
-            // adaptar tamaño del canvas al contenedor
+    function handleFullscreenChange() {
+        if (document.fullscreenElement === mandalaContainer || document.webkitFullscreenElement === mandalaContainer) {
             const w = mandalaContainer.clientWidth;
             const h = mandalaContainer.clientHeight;
             mandalaCanvas.width = w;
@@ -777,19 +835,11 @@
         } else {
             resizeMandalaCanvas();
         }
-    });
-    document.addEventListener('webkitfullscreenchange', () => {
-        if (document.webkitFullscreenElement === mandalaContainer) {
-            const w = mandalaContainer.clientWidth;
-            const h = mandalaContainer.clientHeight;
-            mandalaCanvas.width = w;
-            mandalaCanvas.height = h;
-        } else {
-            resizeMandalaCanvas();
-        }
-    });
+    }
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 
-    // ========== Reproductor básico ==========
+    // ========== Reproductor básico (igual que antes, sin cambios) ==========
     function formatTime(sec) { if(isNaN(sec)) return '00:00'; const m=Math.floor(sec/60); const s=Math.floor(sec%60); return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
     function updateCounter() { if(!library.length) trackCounterSpan.innerText = `TRACK 00/00`; else trackCounterSpan.innerText = `TRACK ${(currentIdx+1).toString().padStart(2,'0')}/${library.length.toString().padStart(2,'0')}`; }
     function refreshUI() { if(library[currentIdx]) songTitleSpan.innerText = library[currentIdx].name; else songTitleSpan.innerText = '🎵 NO FILE'; playBtn.innerText = isPlaying ? '⏸ PAUSE' : '▶ PLAY'; updateCounter(); if(repeatAll) repeatAllBtn.classList.add('active'); else repeatAllBtn.classList.remove('active'); if(repeatOne) repeatOneBtn.classList.add('active'); else repeatOneBtn.classList.remove('active'); }
