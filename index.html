@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>PortaTune | Vintage Local Audio Player</title>
     
-    <!-- Favicon en formato .ico (universal) -->
+    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="shortcut icon" href="favicon.ico">
     
@@ -246,38 +246,42 @@
             max-height: 360px;
             overflow-y: auto;
         }
-        .playlist-controls {
-            display: flex;
-            gap: 5px;
-        }
         .song-row {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 8px;
             padding: 8px 10px;
             margin-bottom: 5px;
             border-radius: 16px;
-            cursor: pointer;
-            color: #cbd5e1;
-            font-size: 12px;
-            transition: all 0.15s;
             background: #0f172a;
+            transition: 0.1s;
+            flex-wrap: wrap;
         }
         .song-row.now-playing {
             background: var(--accent);
             color: #030712;
             font-weight: bold;
         }
-        .song-row .song-info {
-            flex: 1;
+        .song-info {
+            flex: 2;
+            min-width: 120px;
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
+            overflow: hidden;
         }
-        .song-row .song-actions {
+        .song-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+        .song-actions {
             display: flex;
             gap: 6px;
+            flex-shrink: 0;
         }
         .song-actions button {
             background: none;
@@ -286,21 +290,18 @@
             font-size: 14px;
             padding: 4px;
             border-radius: 50%;
-            width: 26px;
-            height: 26px;
+            width: 28px;
+            height: 28px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             transition: 0.1s;
         }
         .song-actions button:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.2);
         }
         .song-actions .delete-btn {
             color: #ef4444;
-        }
-        .song-actions .move-up, .move-down {
-            color: #6b7280;
         }
         .playing-led {
             width: 6px;
@@ -308,6 +309,7 @@
             background: var(--accent);
             border-radius: 50%;
             animation: pulse 1s infinite;
+            flex-shrink: 0;
         }
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1);}
@@ -407,8 +409,8 @@
             .loop-btn { font-size: 16px; padding: 8px 12px; }
             .brand-img { height: 24px; }
             .brand-text { font-size: 18px; }
-            .song-actions button { width: 24px; height: 24px; font-size: 12px; }
-            .action-btn { font-size: 10px; padding: 8px; }
+            .song-actions button { width: 32px; height: 32px; font-size: 16px; }
+            .song-name { font-size: 11px; }
         }
     </style>
 </head>
@@ -582,13 +584,9 @@
         if (to < 0 || to >= library.length) return;
         const [moved] = library.splice(from, 1);
         library.splice(to, 0, moved);
-        if (currentIdx === from) {
-            currentIdx = to;
-        } else if (from < currentIdx && to >= currentIdx) {
-            currentIdx--;
-        } else if (from > currentIdx && to <= currentIdx) {
-            currentIdx++;
-        }
+        if (currentIdx === from) currentIdx = to;
+        else if (from < currentIdx && to >= currentIdx) currentIdx--;
+        else if (from > currentIdx && to <= currentIdx) currentIdx++;
         renderPlaylist();
         if (isPlaying && library[currentIdx]) {
             audio.src = library[currentIdx].url;
@@ -634,7 +632,7 @@
                 <div class="song-row ${activeClass}" data-index="${idx}">
                     <div class="song-info">
                         <span style="opacity:0.6; width:30px;">${(idx+1).toString().padStart(2,'0')}</span>
-                        <span style="flex:1;">${escapeHtml(track.name)}</span>
+                        <span class="song-name">${escapeHtml(track.name)}</span>
                         ${ (idx === currentIdx && isPlaying) ? '<span class="playing-led"></span>' : '' }
                     </div>
                     <div class="song-actions">
@@ -668,7 +666,7 @@
                 deleteSong(idx);
             });
         });
-        document.querySelectorAll('.song-info').forEach((info, i) => {
+        document.querySelectorAll('.song-info').forEach(info => {
             info.addEventListener('click', () => {
                 const idx = parseInt(info.parentElement.dataset.index);
                 currentIdx = idx;
@@ -836,9 +834,9 @@
     closeModalBtn.addEventListener('click', () => tipsModal.classList.remove('active'));
     tipsModal.addEventListener('click', (e) => { if (e.target === tipsModal) tipsModal.classList.remove('active'); });
 
-    // Feedback button: abre el cliente de correo con el destinatario y asunto predefinido
+    // Feedback button: abre en nueva pestaña sin interrumpir la música
     feedbackBtn.addEventListener('click', () => {
-        window.location.href = 'mailto:rodrigooctavioalmanza@gmail.com?subject=Feedback%20PortaTune&body=Hola,%0A%0AQuiero%20compartir%20mi%20feedback%20sobre%20PortaTune:%0A%0A';
+        window.open('mailto:rodrigooctavioalmanza@gmail.com?subject=Feedback%20PortaTune&body=Hola,%0A%0AQuiero%20compartir%20mi%20feedback%20sobre%20PortaTune:%0A%0A', '_blank');
     });
 
     donateBtn.addEventListener('click', () => {
